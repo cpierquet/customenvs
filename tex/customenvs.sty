@@ -1,0 +1,442 @@
+% Author     : C. Pierquet
+% licence    : Released under the LaTeX Project Public License v1.3c or later, see http://www.latex-project.org/lppl.txtf
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{customenvs}[2023/10/22 0.1.0 Custom classic environments]
+
+%====HISTORIQUE
+% v 0.1.0	Version initiale
+
+%====OPTIONS
+\newif\if@enum\@enumtrue%
+\DeclareOption{nonenum}{\@enumfalse}%
+\DeclareOption{noenum}{\@enumfalse}%
+\newif\if@tblr\@tblrtrue%
+\DeclareOption{nontblr}{\@tblrfalse}%
+\DeclareOption{notblr}{\@tblrfalse}%
+\newif\if@multicol\@multicoltrue%
+\DeclareOption{nonmulticol}{\@multicolfalse}%
+\DeclareOption{nomulticol}{\@multicolfalse}%
+\DeclareOption*{}
+\ProcessOptions\relax
+
+%====PACKAGES UTILES À CHARGER
+\if@enum
+	\RequirePackage{enumitem}
+\fi
+\if@tblr
+	\RequirePackage{tabularray}
+\fi
+\if@multicol
+	\RequirePackage{multicol}
+\fi
+\RequirePackage{xintexpr}
+\RequirePackage{randomlist}
+\RequirePackage{simplekv}
+\RequirePackage{xstring}
+\RequirePackage{listofitems}
+
+
+%%----COMMANDES FR
+
+%====DECALER VERTICALEMENT, pas documenté pour le moment...
+\NewDocumentCommand\VCentrer{ O{-0.5} m }{%
+	{\raisebox{#1\depth}{#2\vphantom{azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN0123456789}}}%
+}
+
+%====QCMs
+\defKV[reponsesqcm]{%
+	NbCols=\def\RepQCMNbCol{#1},%
+	PoliceLabels=\def\RepQCMFonte{#1},%
+	EspacesCL=\def\RepQCMOffset{#1},%
+	Labels=\def\RepQCMTypeLabel{#1},%
+	EspaceLabels=\xdef\RepQCMSpace{#1},%
+	Largeur=\def\RepQCMLarg{#1}
+}
+
+\setKVdefault[reponsesqcm]{%
+	EspacesCL={6pt/2pt},%
+	NbCols=4,%
+	Filets=false,%
+	PoliceLabels={\bfseries},%
+	Labels={a.},%
+	EspaceLabels=\kern5pt,%
+	Swap=false,%
+	Largeur=0.99\linewidth
+}
+
+\NewDocumentCommand\QCMFormatteLabel{ m m }{%1=typelabel,%3=caractère
+	\IfSubStr{#1}{a}%
+		{%
+			{\RepQCMFonte\StrSubstitute{#1}{a}{#2}}%
+		}%
+		{}%
+	\IfSubStr{#1}{A}%
+		{%
+			{\RepQCMFonte\StrSubstitute{#1}{A}{#2}}%
+		}%
+		{}%
+	\IfSubStr{#1}{1}%
+		{%
+			{\RepQCMFonte\StrSubstitute{#1}{1}{#2}}%
+		}%
+		{}%
+}
+
+\NewDocumentCommand\ReponsesQCM{ O{} m D<>{} }{%1=nbcol,2=listeréponses
+	\restoreKV[reponsesqcm]%
+	\setKV[reponsesqcm]{#1}%
+	\IfSubStr{\RepQCMOffset}{/}%
+		{\StrCut{\RepQCMOffset}{/}{\RepQCMOffsetCol}{\RepQCMOffsetLgn}}%
+		{\def\RepQCMOffsetCol{\RepQCMOffset}\def\RepQCMOffsetLgn{\RepQCMOffset}}%
+	\setsepchar{§}%
+	\readlist*\QCMListereponses{#2}%
+	\def\QCMNbRep{\QCMListereponseslen}%
+	%les items créés
+	\IfSubStr{\RepQCMTypeLabel}{a}%
+		{%
+			\xdef\RepQCMLabelA{\QCMFormatteLabel{\RepQCMTypeLabel}{a}\RepQCMSpace}%
+			\xdef\RepQCMLabelB{\QCMFormatteLabel{\RepQCMTypeLabel}{b}\RepQCMSpace}%
+			\xdef\RepQCMLabelC{\QCMFormatteLabel{\RepQCMTypeLabel}{c}\RepQCMSpace}%
+			\xdef\RepQCMLabelD{\QCMFormatteLabel{\RepQCMTypeLabel}{d}\RepQCMSpace}%
+		}{}%
+	\IfSubStr{\RepQCMTypeLabel}{A}%
+		{%
+			\xdef\RepQCMLabelA{\QCMFormatteLabel{\RepQCMTypeLabel}{A}\RepQCMSpace}%
+			\xdef\RepQCMLabelB{\QCMFormatteLabel{\RepQCMTypeLabel}{B}\RepQCMSpace}%
+			\xdef\RepQCMLabelC{\QCMFormatteLabel{\RepQCMTypeLabel}{C}\RepQCMSpace}%
+			\xdef\RepQCMLabelD{\QCMFormatteLabel{\RepQCMTypeLabel}{D}\RepQCMSpace}%
+		}{}%
+	\IfSubStr{\RepQCMTypeLabel}{1}%
+		{%
+			\xdef\RepQCMLabelA{\QCMFormatteLabel{\RepQCMTypeLabel}{1}\RepQCMSpace}%
+			\xdef\RepQCMLabelB{\QCMFormatteLabel{\RepQCMTypeLabel}{2}\RepQCMSpace}%
+			\xdef\RepQCMLabelC{\QCMFormatteLabel{\RepQCMTypeLabel}{3}\RepQCMSpace}%
+			\xdef\RepQCMLabelD{\QCMFormatteLabel{\RepQCMTypeLabel}{4}\RepQCMSpace}%
+		}{}%
+	%en fonction du nb de colonnes
+	\IfEq{\QCMNbRep}{2}%2réponses
+		{%
+			\ifboolKV[reponsesqcm]{Filets}%
+				{\begin{tblr}{rowsep=\RepQCMOffsetLgn,colsep=\RepQCMOffsetCol,hlines,vlines,width=\RepQCMLarg,colspec={*{2}{X[b,l]}},#3}}%
+				{\begin{tblr}{rowsep=\RepQCMOffsetLgn,colsep=\RepQCMOffsetCol,width=\RepQCMLarg,colspec={*{2}{X[b,l]}},#3}}%
+				\RepQCMLabelA\QCMListereponses[1] & \RepQCMLabelB\QCMListereponses[2] \\
+			\end{tblr}%
+		}%
+		{}%
+	\IfEq{\QCMNbRep}{3}%3réponses
+		{%
+			\ifboolKV[reponsesqcm]{Filets}%
+				{\begin{tblr}{rowsep=\RepQCMOffsetLgn,colsep=\RepQCMOffsetCol,hlines,vlines,width=\RepQCMLarg,colspec={*{3}{X[b,l]}},#3}}%
+				{\begin{tblr}{rowsep=\RepQCMOffsetLgn,colsep=\RepQCMOffsetCol,width=\RepQCMLarg,colspec={*{3}{X[b,l]}},#3}}%
+				\RepQCMLabelA\QCMListereponses[1] & \RepQCMLabelB\QCMListereponses[2] & \RepQCMLabelC\QCMListereponses[3] \\
+			\end{tblr}%
+		}%
+		{}%
+	\IfEq{\QCMNbRep}{4}%4réponses
+		{%
+			\IfEq{\RepQCMNbCol}{4}%4colonnes
+				{%
+					\ifboolKV[reponsesqcm]{Filets}%
+						{\begin{tblr}{rowsep=\RepQCMOffsetLgn,colsep=\RepQCMOffsetCol,hlines,vlines,width=\RepQCMLarg,colspec={*{4}{X[b,l]}},#3}}%
+						{\begin{tblr}{rowsep=\RepQCMOffsetLgn,colsep=\RepQCMOffsetCol,width=\RepQCMLarg,colspec={*{4}{X[b,l]}},#3}}%
+						\RepQCMLabelA\QCMListereponses[1] & \RepQCMLabelB\QCMListereponses[2] & \RepQCMLabelC\QCMListereponses[3] & \RepQCMLabelD\QCMListereponses[4] \\
+					\end{tblr}%
+				}%
+				{%
+					\ifboolKV[reponsesqcm]{Filets}%
+						{\begin{tblr}{rowsep=\RepQCMOffsetLgn,colsep=\RepQCMOffsetCol,hlines,vlines,width=\RepQCMLarg,colspec={*{2}{X[b,l]}},#3}}%
+						{\begin{tblr}{rowsep=\RepQCMOffsetLgn,colsep=\RepQCMOffsetCol,width=\RepQCMLarg,colspec={*{2}{X[b,l]}},#3}}%
+						\RepQCMLabelA\QCMListereponses[1] & \ifboolKV[reponsesqcm]{Swap}{\RepQCMLabelB\QCMListereponses[2]}{\RepQCMLabelC\QCMListereponses[3]} \\
+						\ifboolKV[reponsesqcm]{Swap}{\RepQCMLabelC\QCMListereponses[3]}{\RepQCMLabelB\QCMListereponses[2]} & \RepQCMLabelD\QCMListereponses[4] \\
+					\end{tblr}%
+				}%
+		}%
+		{}%
+}
+
+%====CENTRAGE
+\newlength{\centeraltbef}%avant
+\newlength{\centeraltbeh}%après
+
+\defKV[myaltcenter]{Avant=\setlength{\centeraltbef}{#1},Apres=\setlength{\centeraltbeh}{#1}}
+\setKVdefault[myaltcenter]{Avant=0.33\baselineskip,Apres=0.33\baselineskip}
+
+\NewDocumentEnvironment{Centrage}{ O{} }%
+	{\restoreKV[myaltcenter]\setKV[myaltcenter]{#1}\par\kern\centeraltbef\centering}%
+	{\par\kern\centeraltbeh}
+
+%====MULTICOLS
+\NewDocumentCommand\CoeffEspaceMulticols{ O{1} }{%
+	\setlength{\multicolsep}{12pt plus 4pt minus 3pt}%
+	\IfStrEq{#1}{1.25}{\setlength{\multicolsep}{15pt plus 5pt minus 3.75pt}}{}% 125% of orig. values
+	\IfStrEq{#1}{0.75}{\setlength{\multicolsep}{9pt plus 3pt minus 2.25pt}}{}% 75% of orig. values
+	\IfStrEq{#1}{0.66}{\setlength{\multicolsep}{8pt plus 2.67pt minus 2pt}}{}% 66% of orig. values
+	\IfStrEq{#1}{0.50}{\setlength{\multicolsep}{6pt plus 2pt minus 1.5pt}}{}% 50% of orig. values
+	\IfStrEq{#1}{0.33}{\setlength{\multicolsep}{4pt plus 1.33pt minus 1pt}}{}% 33% of orig. values
+	\IfStrEq{#1}{0.25}{\setlength{\multicolsep}{3pt plus 1pt minus 0.75pt}}{}% 25% of orig. values
+	\IfStrEq{#1}{0}{\setlength{\multicolsep}{0pt}}{}% 0% of orig. values
+}
+
+\setKVdefault[multicolsperso]{%
+	Type=texte,%
+	CoeffEspVert=0.50,%
+	EpTrait=0pt
+}
+
+\NewDocumentEnvironment{MultiCols}{ O{} r() D<>{} }%
+{%
+	\useKVdefault[multicolsperso]%
+	\setKV[multicolsperso]{#1}%
+	\CoeffEspaceMulticols[\useKV[multicolsperso]{CoeffEspVert}]%
+	\setlength{\columnseprule}{\useKV[multicolsperso]{EpTrait}}%
+	\begin{multicols}{#2}%
+	\IfStrEq{\useKV[multicolsperso]{Type}}{enum}{\begin{enumerate}[#3]}{}%
+	\IfStrEq{\useKV[multicolsperso]{Type}}{item}{\begin{itemize}[#3]}{}%
+}%
+{%
+	\IfStrEq{\useKV[multicolsperso]{Type}}{enum}{\end{enumerate}}{}%
+	\IfStrEq{\useKV[multicolsperso]{Type}}{item}{\end{itemize}}{}%
+	\end{multicols}%
+	\CoeffEspaceMulticols[1]%
+	\setlength{\columnseprule}{0pt}%
+}
+
+%====ITEMCHOICE
+\NewDocumentCommand\CreerListeItems{ m m m }{%1=liste,%2=macro,3=nomliste
+	\@ifIsList{#3}%
+		{La liste \texttt{#3} existe déjà, svp choisir un autre nom.}%
+		{\xdef#2{#1}\NewList{#3}}%
+}
+
+\defKV[itemchoisir]{%
+	Type=\def\ChoixTypeSerie{#1}
+}
+\setKVdefault[itemchoisir]{%
+	Alea=false,%
+	Type=enum
+}
+
+\NewDocumentCommand\ListeChoixItems{ O{} m m r() D<>{} }{%1=options,2=série des items,3=nomsérie,4=liste choix,5=options enum
+	%on teste si la liste considérée existe...
+	\@ifIsList{#3}%
+		{%
+			\restoreKV[itemchoisir]%
+			\setKV[itemchoisir]{#1}%
+			\ClearList{#3}%
+			%création de la liste
+			\ifboolKV[itemchoisir]{Alea}%
+				{%
+					\xintFor* ##1 in {\xintCSVtoList{#2}}\do{\InsertRandomItem{#3}{##1}}
+				}%
+				{%
+					\xintFor* ##1 in {\xintCSVtoList{#2}}\do{\InsertLastItem{#3}{##1}}
+				}%
+			%création de l'environnement
+			\IfStrEq{\ChoixTypeSerie}{enum}%
+				{\begin{enumerate}[#5]}{}%
+			\IfStrEq{\ChoixTypeSerie}{item}%
+				{\begin{itemize}[#5]}{}%
+			\IfSubStr{\ChoixTypeSerie}{MultiCols}%
+				{%
+					\StrBetween[1,2]{\ChoixTypeSerie}{/}{/}[\ChoixTypeMulticols]%
+					\StrBehind[2]{\ChoixTypeSerie}{/}[\NbMulticols]%
+					\begin{MultiCols}[Type=\ChoixTypeMulticols](\NbMulticols)<#5>%
+				}{}%
+			%items choisis
+			\ifboolKV[itemchoisir]{Alea}%
+				{%
+					\xintFor* ##1 in {\xintSeq{0}{\xinteval{#4-1}}}\do{\GetItem{#3}{##1}{ItemChoisi}\item \ItemChoisi}
+				}%
+				{%
+					\xintFor* ##1 in {\xintCSVtoList{#4}}\do{\GetItem{#3}{\xinteval{##1-1}}{ItemChoisi}\item \ItemChoisi}
+				}
+			%fin de l'environnement
+			\IfStrEq{\ChoixTypeSerie}{enum}%
+				{\end{enumerate}}{}
+			\IfStrEq{\ChoixTypeSerie}{item}
+				{\end{itemize}}{}%
+			\IfSubStr{\ChoixTypeSerie}{MultiCols}%
+				{\end{MultiCols}}{}%
+		}%
+		{%
+			La liste \texttt{#3} n'existe pas, veuillez la créer avec la macro \texttt{\textbackslash CreerListeItems}.%
+		}%
+}
+
+%%----COMMANDES EN
+
+%====QCMs
+\defKV[answersmcq]{%
+	NumCols=\def\RepQCMNbCol{#1},%
+	FontLabels=\def\RepQCMFonte{#1},%
+	SpaceCR=\def\RepQCMOffset{#1},%
+	Labels=\def\RepQCMTypeLabel{#1},%
+	SpaceLabels=\xdef\RepQCMSpace{#1},%
+	Width=\def\RepQCMLarg{#1}
+}
+
+\setKVdefault[answersmcq]{%
+	SpaceCR={6pt/2pt},%
+	NumCols=4,%
+	Lines=false,%
+	FontLabels={\bfseries},%
+	Labels={a.},%
+	SpaceLabels=\kern5pt,%
+	Swap=false,%
+	Width=0.99\linewidth
+}
+
+\NewDocumentCommand\MCQFormatLabel{ m m }{%1=typelabel,%3=caractère
+	\IfSubStr{#1}{a}%
+		{%
+			{\RepQCMFonte\StrSubstitute{#1}{a}{#2}}%
+		}%
+		{}%
+	\IfSubStr{#1}{A}%
+		{%
+			{\RepQCMFonte\StrSubstitute{#1}{A}{#2}}%
+		}%
+		{}%
+	\IfSubStr{#1}{1}%
+		{%
+			{\RepQCMFonte\StrSubstitute{#1}{1}{#2}}%
+		}%
+		{}%
+}
+
+\NewDocumentCommand\AnswersMCQ{ O{} m D<>{} }{%1=nbcol,2=listeréponses
+	\restoreKV[answersmcq]%
+	\setKV[answersmcq]{#1}%
+	\IfSubStr{\RepQCMOffset}{/}%
+		{\StrCut{\RepQCMOffset}{/}{\RepQCMOffsetCol}{\RepQCMOffsetLgn}}%
+		{\def\RepQCMOffsetCol{\RepQCMOffset}\def\RepQCMOffsetLgn{\RepQCMOffset}}%
+	\setsepchar{§}%
+	\readlist*\QCMListereponses{#2}%
+	\def\QCMNbRep{\QCMListereponseslen}%
+	%les items créés
+	\IfSubStr{\RepQCMTypeLabel}{a}%
+		{%
+			\xdef\RepQCMLabelA{\MCQFormatLabel{\RepQCMTypeLabel}{a}\RepQCMSpace}%
+			\xdef\RepQCMLabelB{\MCQFormatLabel{\RepQCMTypeLabel}{b}\RepQCMSpace}%
+			\xdef\RepQCMLabelC{\MCQFormatLabel{\RepQCMTypeLabel}{c}\RepQCMSpace}%
+			\xdef\RepQCMLabelD{\MCQFormatLabel{\RepQCMTypeLabel}{d}\RepQCMSpace}%
+		}{}%
+	\IfSubStr{\RepQCMTypeLabel}{A}%
+		{%
+			\xdef\RepQCMLabelA{\MCQFormatLabel{\RepQCMTypeLabel}{A}\RepQCMSpace}%
+			\xdef\RepQCMLabelB{\MCQFormatLabel{\RepQCMTypeLabel}{B}\RepQCMSpace}%
+			\xdef\RepQCMLabelC{\MCQFormatLabel{\RepQCMTypeLabel}{C}\RepQCMSpace}%
+			\xdef\RepQCMLabelD{\MCQFormatLabel{\RepQCMTypeLabel}{D}\RepQCMSpace}%
+		}{}%
+	\IfSubStr{\RepQCMTypeLabel}{1}%
+		{%
+			\xdef\RepQCMLabelA{\MCQFormatLabel{\RepQCMTypeLabel}{1}\RepQCMSpace}%
+			\xdef\RepQCMLabelB{\MCQFormatLabel{\RepQCMTypeLabel}{2}\RepQCMSpace}%
+			\xdef\RepQCMLabelC{\MCQFormatLabel{\RepQCMTypeLabel}{3}\RepQCMSpace}%
+			\xdef\RepQCMLabelD{\MCQFormatLabel{\RepQCMTypeLabel}{4}\RepQCMSpace}%
+		}{}%
+	%en fonction du nb de colonnes
+	\IfEq{\QCMNbRep}{2}%2réponses
+		{%
+			\ifboolKV[answersmcq]{Lines}%
+				{\begin{tblr}{rowsep=\RepQCMOffsetLgn,colsep=\RepQCMOffsetCol,hlines,vlines,width=\RepQCMLarg,colspec={*{2}{X[b,l]}},#3}}%
+				{\begin{tblr}{rowsep=\RepQCMOffsetLgn,colsep=\RepQCMOffsetCol,width=\RepQCMLarg,colspec={*{2}{X[b,l]}},#3}}%
+				\RepQCMLabelA\QCMListereponses[1] & \RepQCMLabelB\QCMListereponses[2] \\
+			\end{tblr}%
+		}%
+		{}%
+	\IfEq{\QCMNbRep}{3}%3réponses
+		{%
+			\ifboolKV[answersmcq]{Lines}%
+				{\begin{tblr}{rowsep=\RepQCMOffsetLgn,colsep=\RepQCMOffsetCol,hlines,vlines,width=\RepQCMLarg,colspec={*{3}{X[b,l]}},#3}}%
+				{\begin{tblr}{rowsep=\RepQCMOffsetLgn,colsep=\RepQCMOffsetCol,width=\RepQCMLarg,colspec={*{3}{X[b,l]}},#3}}%
+				\RepQCMLabelA\QCMListereponses[1] & \RepQCMLabelB\QCMListereponses[2] & \RepQCMLabelC\QCMListereponses[3] \\
+			\end{tblr}%
+		}%
+		{}%
+	\IfEq{\QCMNbRep}{4}%4réponses
+		{%
+			\IfEq{\RepQCMNbCol}{4}%4colonnes
+				{%
+					\ifboolKV[answersmcq]{Lines}%
+						{\begin{tblr}{rowsep=\RepQCMOffsetLgn,colsep=\RepQCMOffsetCol,hlines,vlines,width=\RepQCMLarg,colspec={*{4}{X[b,l]}},#3}}%
+						{\begin{tblr}{rowsep=\RepQCMOffsetLgn,colsep=\RepQCMOffsetCol,width=\RepQCMLarg,colspec={*{4}{X[b,l]}},#3}}%
+						\RepQCMLabelA\QCMListereponses[1] & \RepQCMLabelB\QCMListereponses[2] & \RepQCMLabelC\QCMListereponses[3] & \RepQCMLabelD\QCMListereponses[4] \\
+					\end{tblr}%
+				}%
+				{%
+					\ifboolKV[answersmcq]{Lines}%
+						{\begin{tblr}{rowsep=\RepQCMOffsetLgn,colsep=\RepQCMOffsetCol,hlines,vlines,width=\RepQCMLarg,colspec={*{2}{X[b,l]}},#3}}%
+						{\begin{tblr}{rowsep=\RepQCMOffsetLgn,colsep=\RepQCMOffsetCol,width=\RepQCMLarg,colspec={*{2}{X[b,l]}},#3}}%
+						\RepQCMLabelA\QCMListereponses[1] & \ifboolKV[answersmcq]{Swap}{\RepQCMLabelB\QCMListereponses[2]}{\RepQCMLabelC\QCMListereponses[3]} \\
+						\ifboolKV[answersmcq]{Swap}{\RepQCMLabelC\QCMListereponses[3]}{\RepQCMLabelB\QCMListereponses[2]} & \RepQCMLabelD\QCMListereponses[4] \\
+					\end{tblr}%
+				}%
+		}%
+		{}%
+}
+
+%====ITEMCHOICE
+\NewDocumentCommand\CreateItemsList{ m m m }{%1=liste,%2=macro,3=nomliste
+	\@ifIsList{#3}%
+		{The list \texttt{#3} already exists, pick an other name.}%
+		{\xdef#2{#1}\NewList{#3}}%
+}
+
+\defKV[itemchoice]{%
+	Type=\def\ChoixTypeSerie{#1}
+}
+\setKVdefault[itemchoice]{%
+	Random=false,%
+	Type=enum
+}
+
+\NewDocumentCommand\ListItemsChoice{ O{} m m r() D<>{} }{%1=options,2=série des items,3=nomsérie,4=liste choix,5=options enum
+	%on teste si la liste considérée existe...
+	\@ifIsList{#3}%
+		{%
+			\restoreKV[itemchoice]%
+			\setKV[itemchoice]{#1}%
+			\ClearList{#3}%
+			%création de la liste
+			\ifboolKV[itemchoice]{Random}%
+				{%
+					\xintFor* ##1 in {\xintCSVtoList{#2}}\do{\InsertRandomItem{#3}{##1}}
+				}%
+				{%
+					\xintFor* ##1 in {\xintCSVtoList{#2}}\do{\InsertLastItem{#3}{##1}}
+				}%
+			%création de l'environnement
+			\IfStrEq{\ChoixTypeSerie}{enum}%
+				{\begin{enumerate}[#5]}{}%
+			\IfStrEq{\ChoixTypeSerie}{item}%
+				{\begin{itemize}[#5]}{}%
+			\IfSubStr{\ChoixTypeSerie}{MultiCols}%
+				{%
+					\StrBetween[1,2]{\ChoixTypeSerie}{/}{/}[\ChoixTypeMulticols]%
+					\StrBehind[2]{\ChoixTypeSerie}{/}[\NbMulticols]%
+					\begin{MultiCols}[Type=\ChoixTypeMulticols](\NbMulticols)<#5>%
+				}{}%
+			%items choisis
+			\ifboolKV[itemchoice]{Random}%
+				{%
+					\xintFor* ##1 in {\xintSeq{0}{\xinteval{#4-1}}}\do{\GetItem{#3}{##1}{ItemChoisi}\item \ItemChoisi}
+				}%
+				{%
+					\xintFor* ##1 in {\xintCSVtoList{#4}}\do{\GetItem{#3}{\xinteval{##1-1}}{ItemChoisi}\item \ItemChoisi}
+				}
+			%fin de l'environnement
+			\IfStrEq{\ChoixTypeSerie}{enum}%
+				{\end{enumerate}}{}
+			\IfStrEq{\ChoixTypeSerie}{item}
+				{\end{itemize}}{}%
+			\IfSubStr{\ChoixTypeSerie}{MultiCols}%
+				{\end{MultiCols}}{}%
+		}%
+		{%
+			The list \texttt{#3} doesn't exist, please use \texttt{\textbackslash CreerListeItems} to create it.%
+		}%
+}
+
+\endinput
