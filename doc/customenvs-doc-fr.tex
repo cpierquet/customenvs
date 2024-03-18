@@ -39,8 +39,8 @@
 \usepackage[margin=1.5cm]{geometry}
 \setlength{\parindent}{0pt}
 
-\def\TPversion{0.1.0}
-\def\TPdate{22 octobre 2023}
+\def\TPversion{0.1.2}
+\def\TPdate{17 mars 2024}
 \usepackage[most]{tcolorbox}
 \tcbuselibrary{listingsutf8}
 \newtcblisting{DemoCode}[1]{%
@@ -57,19 +57,19 @@
 		commentstyle={\itshape\color{gray}},
 		keywordstyle={\color{blue}},%
 		classoffset=0,%
-		keywords={usepackage,displaystyle,frac,infty,begin,end,lipsum,centering,par,baselineskip,item,bullet,int},%
+		keywords={usepackage,displaystyle,frac,infty,begin,end,lipsum,centering,par,baselineskip,item,bullet,int,color,NewDocumentCommand},%
 		alsoletter={-},%
 		keywordstyle={\color{blue}},%
 		classoffset=1,%
 		alsoletter={-},%
-		morekeywords={center,justify},%
+		morekeywords={center,justify,\LstDeuxNiv,\LstTroisNiv,\LstQuatreNiv,\NoticeDeuxNiv,\NoticeTroisNiv,\NoticeQuatreNiv,\DeuxNivBatterie,\TroisNivBatterie,\QuatreNivBatterie,\DeuxNivSmiley,\TroisNivSmiley,\QuatreNivSmiley,\vcenterfa,\faIcon},%
 		keywordstyle={\color{violet}},%
 		classoffset=2,%
 		alsoletter={-},%
-		morekeywords={\ReponsesQCM,MultiCols,\CreerListeItems,\ListeChoixItems},%
+		morekeywords={\ReponsesQCM,MultiCols,\CreerListeItems,\ListeChoixItems,\TableauCompetences,\CrayonDeCompetences},%
 		keywordstyle={\color{green!50!black}},%
 		classoffset=3,%
-		morekeywords={Largeur,Filets,EspacesCL,NbCols,Labels,PoliceLabels,EspaceLabels,Swap,Type,CoeffEspVert,EpTrait,Alea},%
+		morekeywords={Largeur,Filets,EspacesCL,NbCols,Labels,PoliceLabels,EspaceLabels,Swap,Type,CoeffEspVert,EpTrait,Alea,LargeurNivs,Niveaux,NoticeNiveaux,Titre,PolTitre,PolNotice,PolComp,LigneSep,CouleurNotice,CouleurNiveaux,CouleurFond,Note,Notice,PoliceCateg,PoliceBloc,Couleurs,LargeurBloc,Echelle,NoirBlanc},%
 		keywordstyle={\color{orange}}
 	},%
 	#1
@@ -145,13 +145,15 @@
 
 \hrule
 
-\vfill
+\pagebreak
 
 \section{Historique}
 
-\verb|v0.1.0|~:~~~~Version initiale
+\verb|v0.1.2|~:~~~~Crayon de compétences
 
-\vspace*{5mm}
+\verb|v0.1.1|~:~~~~Tableaux de compétences
+
+\verb|v0.1.0|~:~~~~Version initiale
 
 \pagebreak
 
@@ -166,7 +168,8 @@ L'idée est de proposer des commandes ou environnements classiques avec quelques
 	\item \textit{centrer} avec gestion des espacements autour ;
 	\item écrire en \textit{multi-colonnes} avec gestion des espacements autour ;
 	\item mettre en forme des réponses à des \textit{QCM} ;
-	\item créer une liste avec \textit{choix des items} (de manière aléatoire ou par saisie directe).
+	\item créer une liste avec \textit{choix des items} (de manière aléatoire ou par saisie directe) ;
+	\item créer un tableau de \textit{compétences}.
 \end{itemize}
 
 \smallskip
@@ -192,15 +195,19 @@ Les packages chargés sont :
 	\item \MontreCode{xstring}, \MontreCode{simplekv}, \MontreCode{listofitems}, \MontreCode{randomlist} et \MontreCode{xintexpr} ;
 	\item \MontreCode{enumitem} ;
 	\item \MontreCode{multicol} ;
-	\item \MontreCode{tabularray}.
+	\item \MontreCode{tabularray} ;
+	\item \MontreCode{xcolor} ;
+	\item \MontreCode{fontawesome5}.
 \end{itemize}
 
-À noter que, pour des raisons de compatibilité (ou d'incompatibilité), les packages \MontreCode{enumitem} ou \MontreCode{multicol} ou \MontreCode{tabularray} peuvent ne pas être chargés par \MontreCode{customenvs} (auxquels cas l'utilisateur devra les avoir chargés pour faire fonctionner certains environnements) via les options :
+À noter que, pour des raisons de compatibilité (ou d'incompatibilité), les packages \MontreCode{enumitem}/\MontreCode{multicol}/\MontreCode{tabularray}/\MontreCode{xcolor}/\MontreCode{fontawesome5} peuvent ne pas être chargés par \MontreCode{customenvs} (auxquels cas l'utilisateur devra les avoir chargés pour faire fonctionner certains environnements) via les options :
 
 \begin{itemize}
 	\item \MontreCode{$\mathtt{\langle}$nonenum$\mathtt{\rangle}$} ;
 	\item \MontreCode{$\mathtt{\langle}$nonmulticol$\mathtt{\rangle}$} ;
-	\item \MontreCode{$\mathtt{\langle}$nontblr$\mathtt{\rangle}$}.
+	\item \MontreCode{$\mathtt{\langle}$nontblr$\mathtt{\rangle}$} ;
+	\item \MontreCode{$\mathtt{\langle}$nonxcolor$\mathtt{\rangle}$} ;
+	\item \MontreCode{$\mathtt{\langle}$nonfa$\mathtt{\rangle}$}.
 \end{itemize}
 
 \begin{DemoCode}{listing only}
@@ -554,6 +561,227 @@ Le dernier argument, optionnel et entre \MontreCode{<...>} correspond à des opt
 \begin{DemoCode}{}
 %affichage de certains items
 \ListeChoixItems[Type=item]{\malisteditemsb}{ListeItemsB}(7,2,1,5,3)<label=$\bullet$>
+\end{DemoCode}
+
+\pagebreak
+
+\section{Tableau de compétences}
+
+\subsection{Principe et fonctionnement}
+
+L'idée est de proposer un environnement pour créer un tableau de compétences, via 2/3/4 niveaux :
+
+\begin{itemize}
+	\item basé sur \MontreCode{tblr}, qui doit donc être chargé (par défaut il l'est) ;
+	\item basé sur \MontreCode{xcolor}, qui doit donc être chargé (par défaut il l'est) ;
+	\item avec personnalisations possibles.
+\end{itemize}
+
+Si \MontreCode{xcolor} est déjà chargé, avec des options particulières, le package peut ne pas le charger, grâce à l'option \MontreCode{nonxcolor}.
+
+\begin{DemoCode}{listing only}
+\TableauCompetences[clés]{listecompétences}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\TableauCompetences{Compétence A § Compétence B}
+\end{DemoCode}
+
+\subsection{Éléments prédéfinis}
+
+Pour simplifier la saisie de certains paramètres, certaines macros ont été définies en interne, et pourront être utilisées, ou redéfinies si besoin.
+
+\begin{DemoCode}{listing only}
+%patch fa vcenter
+\NewDocumentCommand{\vcenterfa}{ O{} m }{$\vcenter{\hbox{\faIcon[#1]{#2}}}$}
+%labelnote
+\def\LabelNoteComp{Note}
+%listeniveaux
+\def\LstDeuxNiv{NA § A}
+\def\LstTroisNiv{NA § ECA § A}
+\def\LstQuatreNiv{NA § PA § ECA § A}
+%noticeniveaux
+\def\NoticeDeuxNiv{Non acquis § Acquis}
+\def\NoticeTroisNiv{Non acquis § En cours d'acquis. § Acquis}
+\def\NoticeQuatreNiv{Non acquis § Part. acquis § En cours d'acquis. § Acquis}
+\end{DemoCode}
+
+\begin{DemoCode}{text only}
+Niveaux par \og batterie \fg :
+
+\MontreCode{\textbackslash DeuxNivBatterie}   : \DeuxNivBatterie\\
+\MontreCode{\textbackslash TroisNivBatterie}  : \TroisNivBatterie \\
+\MontreCode{\textbackslash QuatreNivBatterie} : \QuatreNivBatterie\\
+
+Niveaux par \og smiley \fg :
+
+\MontreCode{\textbackslash DeuxNivSmiley}     : \DeuxNivSmiley\\
+\MontreCode{\textbackslash TroisNivSmiley}    : \TroisNivSmiley\\
+\MontreCode{\textbackslash QuatreNivSmiley}   : \QuatreNivSmiley
+\end{DemoCode}
+
+\pagebreak
+
+Les \MontreCode{clés} disponibles sont :
+
+\begin{itemize}
+	\item \MontreCode{Largeur} : largeur globale du tableau ; \MontreCode{0.95\textbackslash linewidth} par défaut
+	\item \MontreCode{LargeurNivs} : largeur des colonnes Niv + Note (séparées par \MontreCode{§}) ; \MontreCode{0.75cm § 1.25cm} par défaut
+	\item \MontreCode{Niveaux} : liste des niveaux (séparés par \MontreCode{§}) ; \MontreCode{NA § ECA § A} par défaut
+	\item \MontreCode{NoticeNiveaux} : notice des niveaux (séparés par \MontreCode{§}) ; \MontreCode{Non acquis § En cours d'acquisition § Acquis} par défaut ;
+	\item \MontreCode{Titre} : titre du tableau ; \MontreCode{DS01} par défaut
+	\item \MontreCode{PolTitre} : police de la 1\up{ere} ligne ; \MontreCode{\textbackslash small\textbackslash sffamily\textbackslash bfseries} par défaut
+	\item \MontreCode{PolNotice} : police de la notice (dernière ligne) ; \MontreCode{\textbackslash small\textbackslash sffamily\textbackslash bfseries} par défaut
+	\item \MontreCode{PolComp} : police des lignes des compétences ; \MontreCode{\textbackslash small\textbackslash sffamily} par défaut
+	\item \MontreCode{LigneSep} : séparation entre les lignes ; \MontreCode{2pt} par défaut
+	\item \MontreCode{CouleurNotice} : couleur de la notice ; \MontreCode{black} par défaut
+	\item \MontreCode{CouleurNiveaux} : couleur de la première ligne ; \MontreCode{black} par défaut
+	\item \MontreCode{CouleurFond} : fond de la première ligne; \MontreCode{lightgray!25} par défaut
+	\item \MontreCode{Note} : booléen pour afficher la colonne note ; \MontreCode{true} par défaut
+	\item \MontreCode{Notice} : booléen pour afficher la ligne notice; \MontreCode{true} par défaut.
+\end{itemize}
+
+L'argument, obligatoire et entre \MontreCode{\{...\}} est la liste des compétences, sous la forme \MontreCode{Comp A § Comp B § ...}.
+
+À noter que les clés \MontreCode{Niveaux} et \MontreCode{NoticeNiveaux} doivent avoir le même nombre d'éléments.
+
+\subsection{Exemples}
+
+\begin{DemoCode}{}
+%Note + Notice
+\TableauCompetences{Utiliser le compas § Utiliser l'équerre}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+%- Note + Notice
+\TableauCompetences[Note=false]{Utiliser le compas § Utiliser l'équerre}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+%Note - Notice
+\TableauCompetences[Notice=false]{Utiliser le compas § Utiliser l'équerre}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+%- Note - Notice
+\TableauCompetences[Note=false,Notice=false]{Utiliser le compas § Utiliser l'équerre}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+%Personnalisations
+\TableauCompetences[Titre=Eval n°01,Niveaux=\TroisNivBatterie]{Utiliser le compas § Utiliser l'équerre}\par
+\TableauCompetences[Titre={},Niveaux=\TroisNivSmiley]{Utiliser le compas § Utiliser l'équerre}\par
+\TableauCompetences[Largeur=10cm,Notice=false,Titre={},Niveaux=\TroisNivSmiley]{Utiliser le compas § Utiliser l'équerre}\par
+\end{DemoCode}
+
+\begin{DemoCode}{}
+%deux niveaux
+\TableauCompetences[Niveaux=\LstDeuxNiv,NoticeNiveaux=\NoticeDeuxNiv]{Utiliser le compas § Utiliser l'équerre}\par
+\TableauCompetences[Largeur=10cm,Titre={},Niveaux=\DeuxNivBatterie, NoticeNiveaux=\NoticeDeuxNiv]{Utiliser le compas § Utiliser l'équerre}
+\end{DemoCode}
+
+\pagebreak
+
+\begin{DemoCode}{}
+%quatre niveaux, personnalisation 'complète'
+\def\LabelNoteComp{Appréc.}
+\TableauCompetences[%
+	Largeur=14cm,%
+	LargeurNivs={1cm§3.5cm},%
+	Niveaux={N0§N1§N2§N3},
+	NoticeNiveaux={Très bof§Bof§Moyen§Bien},
+	CouleurNotice=orange,%
+	CouleurNiveaux=blue,%
+	PolTitre=\large\ttfamily\itshape\bfseries
+	]%
+	{Utiliser la règle § Utiliser le compas § Utiliser l'équerre}
+\end{DemoCode}
+
+\pagebreak
+
+\section{Crayon de compétences}
+
+\subsection{Principe et fonctionnement}
+
+L'idée est de proposer un environnement pour créer un \textit{crayon} de compétences, basé sur \MontreCode{TikZ}.
+
+Le code (en licence CC-BY-SA 4.0) est largement inspiré du fil :
+
+\hfill{\footnotesize \url{https://tex.stackexchange.com/questions/504092/replicating-a-fancy-bordered-text-style-in-latex/504145#504145}}\hfill~
+
+\begin{DemoCode}{listing only}
+\CrayonDeCompetences[clés]<options tikz>{listecompétences}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\CrayonDeCompetences{Chercher/Compétence 1\\Compétence 2,Modéliser/Compétence 1\\Compétence 2}
+\end{DemoCode}
+
+La forme générale est fixée, et seuls quelques éléments de personnalisation(s) sont modifiables.
+
+\subsection{La commande}
+
+Les \MontreCode{clés} disponibles, à donner entre \MontreCode{[...]}, sont :
+
+\begin{itemize}
+	\item \MontreCode{PoliceCateg} : police des catégories ; \MontreCode{\textbackslash bfseries\textbackslash sffamily} par défaut
+	\item \MontreCode{PoliceBloc} : police des compétences ; \MontreCode{\textbackslash small\textbackslash ttfamily} par défaut
+	\item \MontreCode{Couleurs} : liste des couleurs de catégories, sous la forme
+	
+	\MontreCode{FondCatég1/PoliceCatég1,FondCatég2/PoliceCatég2,...}
+	
+	(Si \MontreCode{PolicCatég} est absent, \MontreCode{black} est utilisé par défaut)
+	\item \MontreCode{LargeurBloc} : largeur des blocs \textit{texte} ; \MontreCode{5cm} par défaut ;
+	\item \MontreCode{Echelle} : échelle globale du schéma ; \MontreCode{1} par défaut
+	\item \MontreCode{NoirBlanc} : booléen pour un affichage N\&B. \MontreCode{false} par défaut.
+\end{itemize}
+
+L'argument optionnel, et entre \MontreCode{<...>}, permet de spécifier des options à la figure \MontreCode{TikZ} (comme une rotation, un alignement, etc)
+
+\smallskip
+
+L'argument, obligatoire et entre \MontreCode{\{...\}} est la liste des catégories/compétences, sous la forme
+
+\MontreCode{Catég1/ListeCompétences1,Catég2/ListeCompétences2,...}.
+
+\begin{DemoCode}{}
+\CrayonDeCompetences[Largeur=3cm,Couleurs=teal/white]{%
+	DS01/Compétence 1\\Compétence 2
+}
+\end{DemoCode}
+
+\subsection{Exemples}
+
+\begin{DemoCode}{}
+%Sortie par défaut
+\CrayonDeCompetences{%
+	Chercher/Compétence 1\\Compétence 2,
+	Modéliser/Compétence 1\\Compétence 2,
+	Représenter/Compétence 1,
+	Calculer/Compétence 1\\Compétence 2\\Compétence 3
+}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\CrayonDeCompetences[Echelle=0.75,LargeurBloc=3cm]%
+	{Chercher/Compétence 1\\Compétence 2,
+	Modéliser/{Compétence 1\\Compétence 2},Raisonner/{Compétence 1\\Compétence 2}}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\CrayonDeCompetences[Echelle=0.5]%
+	{Chercher/Compétence 1\\Compétence 2,Modéliser/{Compétence 1\\Compétence 2}}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\CrayonDeCompetences[Echelle=0.75,NoirBlanc]<rotate=90>%
+	{Chercher/Compétence 1\\Compétence 2,Modéliser/{Compétence 1\\Compétence 2}}%
+\hspace{1cm}
+\CrayonDeCompetences[Echelle=0.75,NoirBlanc]<rotate=-90>%
+	{Chercher/Compétence 1\\Compétence 2,Modéliser/{Compétence 1\\Compétence 2}}
+\hspace{1cm}
+\CrayonDeCompetences[Echelle=0.75,NoirBlanc,Largeur,LargeurBloc=3cm]<rotate=45>%
+	{Chercher/Compétence 1\\Compétence 2,Modéliser/{Compétence 1\\Compétence 2}}
 \end{DemoCode}
 
 \end{document}

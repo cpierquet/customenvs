@@ -34,8 +34,8 @@
 \usepackage[margin=1.5cm]{geometry}
 \setlength{\parindent}{0pt}
 
-\def\TPversion{0.1.0}
-\def\TPdate{22/10/2023}
+\def\TPversion{0.1.2}
+\def\TPdate{17/03/2024}
 \usepackage{tcolorbox}
 \sethlcolor{lightgray!25}
 \NewDocumentCommand\MontreCode{ m }{%
@@ -111,6 +111,10 @@
 
 \section{History}
 
+\verb|v0.1.1|~:~~~~Pencil of skills
+
+\verb|v0.1.1|~:~~~~Skills table (only french for the moment...)
+
 \verb|v0.1.0|~:~~~~Initial version
 
 \vspace*{5mm}
@@ -121,12 +125,13 @@
 
 \subsection{Idea}
 
-The idea is to propose some classics environments with customizations :
+The idea is to propose some classics environments with customizations (some are, for the moment, only in french) :
 
 \begin{itemize}
 	\item write in \textit{multicols}, with spacings enhancements ;
 	\item present answers for a \textit{MCQ} ;
-	\item create a list with \textit{choosen items} (randomly or by numbers).
+	\item create a list with \textit{choosen items} (randomly or by numbers) ;
+	\item present a skill table.
 \end{itemize}
 
 \smallskip
@@ -143,15 +148,17 @@ Loaded packages are
 	\item \MontreCode{xstring}, \MontreCode{simplekv}, \MontreCode{listofitems}, \MontreCode{randomlist} and \MontreCode{xintexpr} ;
 	\item \MontreCode{enumitem} ;
 	\item \MontreCode{multicol} ;
-	\item \MontreCode{tabularray}.
+	\item \MontreCode{tabularray} ;
+	\item \MontreCode{fontawesome5} ;
 \end{itemize}
 
-Due to limitations, \MontreCode{enumitem} or \MontreCode{multicol} or \MontreCode{tabularray} can be \textit{un}loaded by \MontreCode{customenvs} (user must load them manually) via options :
+Due to limitations, \MontreCode{enumitem}/\MontreCode{multicol}/\MontreCode{tabularray}\MontreCode{fontawesome5} can be \textit{un}loaded by \MontreCode{customenvs} (user must load them manually) via options :
 
 \begin{itemize}
 	\item \MontreCode{$\mathtt{\langle}$noenum$\mathtt{\rangle}$} ;
 	\item \MontreCode{$\mathtt{\langle}$nomulticol$\mathtt{\rangle}$} ;
-	\item \MontreCode{$\mathtt{\langle}$notblr$\mathtt{\rangle}$}.
+	\item \MontreCode{$\mathtt{\langle}$notblr$\mathtt{\rangle}$} ;
+	\item \MontreCode{$\mathtt{\langle}$nofa$\mathtt{\rangle}$} ;
 \end{itemize}
 
 \begin{codehigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
@@ -337,5 +344,78 @@ Controls are done :
 \end{codehigh}
 
 \ListItemsChoice[Type=item]{\mylistofitemsb}{ListItemsB}(7,2,1,5,3)<label=$--$>
+
+\pagebreak
+
+\section{Pencil of skills}
+
+\subsection{Global use}
+
+The idea is to :
+
+\begin{itemize}
+	\item present of list of categories and skills ;
+	\item prensented like a pencil.
+\end{itemize}
+
+The code (within CC-BY-SA 4.0 license) is adapted from :
+
+\hfill{\footnotesize \url{https://tex.stackexchange.com/questions/504092/replicating-a-fancy-bordered-text-style-in-latex/504145#504145}}\hfill~
+
+\begin{codehigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\PencilSkills[keys]<tikz options>{listofskills}
+\end{codehigh}
+
+The style is globally fixed, but there's some customization available.
+
+\subsection{The macro}
+
+Available \MontreCode{keys} are :
+
+\begin{itemize}
+	\item \MontreCode{FontCateg} : font for the categories ;
+	\item \MontreCode{FontBlock} : font for the skills ;
+	\item \MontreCode{Colors} : list of category's colors
+	
+	\MontreCode{BgCateg1/FgCateg1,BgCateg1/FgCateg1,...}
+	
+	(if \MontreCode{FgCateg1} est missing, \MontreCode{black} is used)
+	\item \MontreCode{BlockWidth} : width of skill's block ;
+	\item \MontreCode{Scale} : global scale
+	\item \MontreCode{BlackWhite} : boolean for B\&W.
+\end{itemize}
+
+The second argument, optional and between \MontreCode{<...>} gives specific options to \MontreCode{enumitem} environment.
+
+\smallskip
+
+The last argument, mandatory and between \MontreCode{(...)} give the list of categories/skills, within
+
+\MontreCode{Categ1/ListSkills1,Categ2/ListSkills2,...}.
+
+\subsection{Examples}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+%default output
+\PencilSkills{Search/Skill 1\\ Skill 2,Model/{Skill 1\\ Skill 2}}
+\end{demohigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\PencilSkills[Scale=0.75]%
+    {Search/Skill 1\\Skill 2,Model/{Skill 1\\Skill 2},%
+    Represent/{Skill 1\\Skill 2},Calculate/{Skill 1\\Skill 2},%
+    Reason/{Skill 1\\Skill 2},Communicate/{Skill 1\\Skill 2}}
+\end{demohigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\PencilSkills[Scale=0.75,BlockWidth=3cm]<rotate=90>{
+    Search/Skill 1\\Skill 2,Model/{Skill 1\\Skill 2}}
+\hspace{1cm}
+\PencilSkills[Scale=0.75,BlockWidth=3cm]<rotate=-90>{
+    Search/Skill 1\\Skill 2,Model/{Skill 1\\Skill 2}}
+\hspace{1cm}
+\PencilSkills[Scale=0.75,BlockWidth=3cm,BlackWhite]<rotate=45>{
+    Search/Skill 1\\Skill 2,Model/{Skill 1\\Skill 2}}
+\end{demohigh}
 
 \end{document}
