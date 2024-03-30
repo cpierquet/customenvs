@@ -1,0 +1,80 @@
+% !TeX TXS-program:compile = txs:///arara
+% arara: pdflatex: {shell: no, synctex: no, interaction: batchmode}
+% arara: pdflatex: {shell: no, synctex: no, interaction: batchmode} if found('log', '(undefined references|Please rerun|Rerun to get)')
+
+\documentclass[a5paper,11pt]{article}
+\usepackage[margin=1cm]{geometry}
+\usepackage{customenvs}
+%facultatif, pour les décorations
+\usepackage{graphicx}
+\usepackage{dashrulex}
+\usepackage{coloredbelts}
+\usepackage{pictochrono}
+%mise en page
+\usepackage{ipsum}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\begin{EnvtExo}%exo1
+	\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Trait=pointilles]%exo2
+	\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Trait=dashilles]%exo3
+	\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Decoration=Icone/\faPython]%exo4
+	\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Decoration=Ceinture/rouge]%exo5
+	\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Decoration=Chrono/20]%exo6
+	\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Decoration=Image/goku_ssj4]%exo7
+	\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Decoration=Image/sseiya_shura]%exo8
+	\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Decoration=Points/7]%exo9
+	\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Type=Perso/{Titre perso }]%exo10
+	\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\StyleEnvtExo[Couleur=red,Police=\bfseries\ttfamily,EpTrait=2pt,Libelle={Exercice n°}]
+
+\begin{EnvtExo}[Decoration=Icone/\faAddressBook]%exo11
+	\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Type=Perso/{Titre perso },Decoration=Chrono/25,Couleur=red,Trait=dashilles]%exo12
+	\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\StyleEnvtExoDefaut
+
+\begin{EnvtExo}%
+	[Type=Perso/{Titre perso~},Decoration=Image/goku_ssj4,Trait=non,Compteur=false]%exo13
+	\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\TitreExo[Type=Perso/{Annexe Exercice 3},Compteur=false,Decoration=Image/sseiya_aiolos]%exo14
+
+\ipsum<Lang=FR,Type=sent>
+
+\end{document}

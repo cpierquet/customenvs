@@ -39,8 +39,8 @@
 \usepackage[margin=1.5cm]{geometry}
 \setlength{\parindent}{0pt}
 
-\def\TPversion{0.1.2}
-\def\TPdate{17 mars 2024}
+\def\TPversion{0.1.3}
+\def\TPdate{30 mars 2024}
 \usepackage[most]{tcolorbox}
 \tcbuselibrary{listingsutf8}
 \newtcblisting{DemoCode}[1]{%
@@ -66,10 +66,10 @@
 		keywordstyle={\color{violet}},%
 		classoffset=2,%
 		alsoletter={-},%
-		morekeywords={\ReponsesQCM,MultiCols,\CreerListeItems,\ListeChoixItems,\TableauCompetences,\CrayonDeCompetences},%
+		morekeywords={\ReponsesQCM,MultiCols,\CreerListeItems,\ListeChoixItems,\TableauCompetences,\CrayonDeCompetences,\StyleEnvtExo,\StyleEnvtExoDefaut,\TitreExo,\ipsum},%
 		keywordstyle={\color{green!50!black}},%
 		classoffset=3,%
-		morekeywords={Largeur,Filets,EspacesCL,NbCols,Labels,PoliceLabels,EspaceLabels,Swap,Type,CoeffEspVert,EpTrait,Alea,LargeurNivs,Niveaux,NoticeNiveaux,Titre,PolTitre,PolNotice,PolComp,LigneSep,CouleurNotice,CouleurNiveaux,CouleurFond,Note,Notice,PoliceCateg,PoliceBloc,Couleurs,LargeurBloc,Echelle,NoirBlanc},%
+		morekeywords={Largeur,Filets,EspacesCL,NbCols,Labels,PoliceLabels,EspaceLabels,Swap,Type,CoeffEspVert,EpTrait,Alea,LargeurNivs,Niveaux,NoticeNiveaux,Titre,PolTitre,PolNotice,PolComp,LigneSep,CouleurNotice,CouleurNiveaux,CouleurFond,Note,Notice,PoliceCateg,PoliceBloc,Couleurs,LargeurBloc,Echelle,NoirBlanc,Libelle,EpTrait,Police,Type,ComplementTitre,Titre,CodeDebut,Couleur,EchelleImage,Decoration,Trait},%
 		keywordstyle={\color{orange}}
 	},%
 	#1
@@ -148,6 +148,8 @@
 \pagebreak
 
 \section{Historique}
+
+\verb|v0.1.3|~:~~~~Environnement/commande pour des exercices, avec personnalisation(s)
 
 \verb|v0.1.2|~:~~~~Crayon de compétences
 
@@ -782,6 +784,196 @@ L'argument, obligatoire et entre \MontreCode{\{...\}} est la liste des catégori
 \hspace{1cm}
 \CrayonDeCompetences[Echelle=0.75,NoirBlanc,Largeur,LargeurBloc=3cm]<rotate=45>%
 	{Chercher/Compétence 1\\Compétence 2,Modéliser/{Compétence 1\\Compétence 2}}
+\end{DemoCode}
+
+\pagebreak
+
+\section{Titre d'exercices}
+
+\subsection{Principe et définition du style global}
+
+L'idée est de proposer une commande ou un environnement pour afficher, \textit{facilement}, un \textit{titre} pour les exercices d'une évaluation ou d'une fiche d'exercices.
+
+\smallskip
+
+Les éléments personnalisables sont :
+
+\begin{itemize}
+	\item le libellé via la clé \MontreCode{[Libelle]}, qui vaut \MontreCode{Exercice~} par défaut ;
+	\item la couleur via la clé \MontreCode{[Couleur]}, qui vaut \MontreCode{blue!50!black} par défaut ;
+	\item la police via la clé \MontreCode{[Police]}, qui vaut \MontreCode{\textbackslash bfseries\textbackslash LARGE\textbackslash sffamily} par défaut ;
+	\item l'épaisseur du trait (éventuel) via la clé \MontreCode{[EpTrait]}, qui vaut \MontreCode{1.1pt} par défaut.
+\end{itemize}
+
+L'utilisateur peut personnaliser \textit{globalement} les éléments précédents, les styles seront dans ce cas propagés à tous les environnements ou à toutes les commandes créant les titres.
+
+\begin{DemoCode}{listing only}
+%personnalisation(s)
+\StyleEnvtExo[clés]
+
+%paramètres par défaut
+\StyleEnvtExoDefaut
+\end{DemoCode}
+
+Une fois les styles \textit{choisis}, il suffit d'utiliser la commande d'environnement ou la commande \textit{directe} :
+
+\begin{DemoCode}{}
+%exo1, environnement par défaut
+\begin{EnvtExo}
+Ceci est un exercice\ldots
+\end{EnvtExo}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+%exo2, macro par défaut
+\TitreExo
+
+Ceci est un exercice\ldots
+\end{DemoCode}
+
+\subsection{Options de personnalisations}
+
+Hormis le style global, il est possible de modifier/ajouter certains éléments :
+
+\begin{itemize}
+	\item le trait peut être défini :
+	\begin{itemize}
+		\item plein (par défaut) ;
+		\item en pointillés, via \texttt{dotfill} ;
+		\item en \textit{dashillés}, via le package \texttt{dashrulex} ;
+	\end{itemize}
+	\item un complément de titre peut être rajouté ;
+	\item une décoration peut être rajoutée en fin de ligne :
+	\begin{itemize}
+		\item des points, sous la forme \texttt{(xx points)} ;
+		\item une image, via \texttt{graphicx}, dont la hauteur est adaptée à la hauteur de la ligne en cours ;
+		\item une icône, via \texttt{fontawesome5}, dont la hauteur est adaptée à la hauteur de la ligne en cours ;
+		\item un petit chronomètre, via \texttt{pictochrono}, dont la hauteur est adaptée à la hauteur de la ligne en cours ;
+		\item une ceinture colorée, via \texttt{coloredbelts}, dont la hauteur est adaptée à la hauteur de la ligne en cours ;
+	\end{itemize}
+	\item le compteur (nommé \MontreCode{numeroexo}) peut être désactivé et \textit{adpaté} via les commandes classiques de compteurs.
+\end{itemize}
+
+\pagebreak
+
+Les \MontreCode{clés} disponibles, à donner entre \MontreCode{[...]}, sont :
+
+\begin{itemize}
+	\item \MontreCode{Type} : type de libellés, parmi \MontreCode{Classique} (défaut) ou \MontreCode{Perso/titrepersonnalisé}
+	\item \MontreCode{ComplementTitre} : complément pour la titre, après le numéro (attention aux espaces) ;
+	\item \MontreCode{CodeDebut} : code \LaTeX\ qui sera \textit{rajouté} entre le titre et l'énoncé ;
+	\item \MontreCode{EchelleImage} : pour modifier ponctuellement l'image de décoration ;
+	\item \MontreCode{Compteur} : booléen pour activer/désactiver (\MontreCode{true} par défaut) le compteur (non affiché et non incrémenté) ;
+	\item \MontreCode{Decoration} : choix de la décoration parmi :
+	\begin{itemize}
+		\item \MontreCode{Icone/...} := afficher l'icône \MontreCode{...} à la fin de la ligne ;
+		\item \MontreCode{Image/...} := afficher l'image \MontreCode{...} à la fin de la ligne ;
+		\item \MontreCode{Ceinture/...} := afficher la ceinture couleur \MontreCode{...} à la fin de la ligne ;
+		\item \MontreCode{Chrono/...} := afficher le chrono de durée \MontreCode{...} à la fin de la ligne ;
+		\item \MontreCode{Points/...} := afficher les points \MontreCode{(... points)} à la fin de la ligne ;
+	\end{itemize}
+	\item \MontreCode{Trait} : choix du trait parmi :
+	\begin{itemize}
+		\item \MontreCode{plein} := un trait plain (par défaut) ;
+		\item \MontreCode{non} := aucun trait ;
+		\item \MontreCode{pointilles} := pointilles (\texttt{\textbackslash dotfill}) ;
+		\item \MontreCode{dashilles} := pointilles \textit{dash} (\texttt{\textbackslash hdashrule}).
+	\end{itemize}
+\end{itemize}
+
+\subsection{Exemples}
+
+Les exemples suivants ont été obtenus via un document externe (fourni avec le package), du fait du chargement de packages spécifiques.
+
+Le code proposé utilise l'environnement, mais la commande simple est complètement compatible également !
+
+\smallskip
+
+{\footnotesize\faExclamationTriangle} Les petites \textit{images} ne sont pas incluses dans le package, elles sont là pour illustrer l'utilisation d'images personnelles.
+
+\begin{DemoCode}{listing only}
+\documentclass[a5paper,11pt]{article}
+\usepackage[margin=1cm]{geometry}
+\usepackage{customenvs}
+%facultatif, pour les décorations
+\usepackage{graphicx}
+\usepackage{dashrulex}
+\usepackage{coloredbelts}
+\usepackage{pictochrono}
+%mise en page
+\usepackage{ipsum}
+\setlength{\parindent}{0pt}
+\end{DemoCode}
+
+\pagebreak
+
+\begin{DemoCode}{listing only}
+\begin{EnvtExo}%exo1
+\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Trait=pointilles]%exo2
+\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Trait=dashilles]%exo3
+\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Decoration=Icone/\faPython]%exo4
+\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Decoration=Ceinture/rouge]%exo5
+\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Decoration=Chrono/20]%exo6
+\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Decoration=Image/goku_ssj4]%exo7
+\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Decoration=Image/sseiya_shura]%exo8
+\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Decoration=Points/7]%exo9
+\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Type=Perso/{Titre perso }]%exo10
+\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\StyleEnvtExo[Couleur=red,Police=\bfseries\ttfamily,EpTrait=2pt,Libelle={Exercice n°}]
+
+\begin{EnvtExo}[Decoration=Icone/\faAddressBook]%exo11
+\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\begin{EnvtExo}[Type=Perso/{Titre perso },Decoration=Chrono/25,Couleur=red,Trait=dashilles]%exo12
+\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\StyleEnvtExoDefaut
+
+\begin{EnvtExo}%
+	[Type=Perso/{Titre perso~},Decoration=Image/goku_ssj4,Trait=non,Compteur=false]%exo13
+\ipsum<Lang=FR,Type=sent>
+\end{EnvtExo}
+
+\TitreExo[Type=Perso/{Annexe Exercice 3},Compteur=false,Decoration=Image/sseiya_aiolos]%exo14
+
+\ipsum<Lang=FR,Type=sent>
+\end{DemoCode}
+
+\pagebreak
+
+\begin{DemoCode}{}
+\includegraphics{envtexo_exemples.pdf}
 \end{DemoCode}
 
 \end{document}
