@@ -3,9 +3,11 @@
 % source pencil...: CC-BY-SA 4.0 https://tex.stackexchange.com/questions/504092/replicating-a-fancy-bordered-text-style-in-latex/504145#504145
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{customenvs}[2024/03/30 0.1.3 Custom classic environments]
+\ProvidesPackage{customenvs}[2024/05/17 0.1.5 Custom classic environments]
 
 %====HISTORIQUE
+% v 0.1.6	Boxes for exam title + circled numbers + Vignettes + Small simple boxes creation
+% v 0.1.4	Commande (en/fr) pour du texte dans une boîte arrondie, de hauteur 'figée' + 'Chat' SMS
 % v 0.1.3	Environnement/Commande pour présentation d'un exercice
 % v 0.1.2	Crayon de compétences
 % v 0.1.1	Ajout de tableaux de compétences
@@ -53,7 +55,10 @@
 \RequirePackage{listofitems}
 \RequirePackage{calc}
 \RequirePackage{tikz}
-\usetikzlibrary{decorations.pathmorphing,positioning,shapes.misc,calc}
+\usetikzlibrary{decorations.pathmorphing,positioning,shapes.misc,calc,babel}
+\RequirePackage{tcolorbox}
+\RequirePackage{varwidth}
+\tcbuselibrary{skins}
 
 %%----COMMANDES FR
 
@@ -913,6 +918,179 @@
 	\EnvtExoCodeAvant%
 }
 
+%====BOITE ARRONDIE
+\newlength{\tmpheightbox}
+\defKV[BoiteArrondie]{EspH=\def\RoundedBoxDelta{#1},Style=\def\RoundedBoxStyle{#1}}
+\setKVdefault[BoiteArrondie]{%
+	Fond=red,%
+	Texte=white,%
+	EspH=0.125em,%
+	Style=rect
+}
+\NewDocumentCommand\BoiteArrondie{ O{} m O{char} }{%
+	\restoreKV[BoiteArrondie]%
+	\setKV[BoiteArrondie]{#1}%
+	\settototalheight{\tmpheightbox}{\hbox{(EazertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN)#2}}%hauteur globale
+	\IfStrEqCase{\RoundedBoxStyle}{%
+		{rect}{\tikz[remember picture,baseline=(#3.base)]{\node[minimum height=\tmpheightbox,shape=rectangle,rounded corners=0.25em,fill={\useKV[BoiteArrondie]{Fond}},inner sep=0.75pt,outer sep=0pt,text={\useKV[BoiteArrondie]{Texte}}] (#3) {\vphantom{(qE)}\kern\RoundedBoxDelta#2\kern\RoundedBoxDelta};}}%
+		{cercle}{\tikz[remember picture,baseline=(#3.base)]{\node[shape=circle,minimum height=\tmpheightbox,fill={\useKV[BoiteArrondie]{Fond}},inner sep=0.75pt,outer sep=0pt,text={\useKV[BoiteArrondie]{Texte}}] (#3) {\vphantom{(qE)}#2};}}%
+	}\relax
+}
+
+%%====Chat SMS
+
+%===Données utiles
+\newlength{\WidthofSMS}
+\newlength{\HeightofSMS}
+\newlength{\OffsetofSMS}
+\newlength{\WidthofSMSavatar}
+\newlength{\MarginofSMSavatar}
+\colorlet{smscolp}{teal!75!cyan!75!white}
+\colorlet{smscoltitle}{white}
+
+%===Styles [FR/EN]
+\tcbset{SMSglobal/.style={
+	enhanced,arc=0pt,outer arc=0pt,colback=\ProjectSmsColback,toptitle=0.3cm,bottomtitle=0.3cm,title={\null},
+	overlay={
+		%la barre de titre
+		\node[anchor=east,smscoltitle,font=\large] at ([xshift=-1mm]title.east) {\faVideo~~\faPhone*~~\faEllipsisV};
+		\node[draw=none,anchor=west,inner sep=1pt,text=smscoltitle,font=\large] at ([xshift=1mm]title.west) (picture) {\ProjectSmsAvat};
+		\node[draw=none,anchor=west,text=smscoltitle,font=\large,text depth=0pt,inner sep=1pt] at (picture.east) {\sffamily\bfseries\vphantom{pB}\NameofSMS} ;
+		%le bas
+		\draw[line width=0.85pt,darkgray] ([yshift=1cm]frame.south west) -- ([yshift=1cm]frame.south east);
+		\node[draw=smscolp!75!black,top color=lightgray!40,bottom color=lightgray!40,middle color=white,line width=1pt,rounded corners=2pt,text width={{\WidthofSMS-2.5cm}},minimum height=0.75cm,font=\large\ProjectSmsFonte,text=darkgray,inner xsep=6pt] at ([shift={(0,0.5cm)}]frame.south) {\textcolor{gray}{\rule[-0.1cm]{1pt}{0.5cm}}\,\ProjectSmsWrite};
+		\node[draw=none,font=\LARGE,text=darkgray!50,anchor=east,align=center] at ([shift={(-1mm,0.5cm)}]frame.south east) (send) {\faPaperPlane};
+		\node[draw=none,font=\LARGE,text=darkgray!50,anchor=west,align=center] at ([shift={(1mm,0.5cm)}]frame.south west) (add) {\faPlusCircle};
+		},
+	boxrule=0.85pt,colframe=darkgray,
+	title style={top color=smscolp!90!black,bottom color=smscolp!90!black,middle color=smscolp!75},
+	bottom=1.15cm,top=0mm,left=1mm,right=1mm
+	}
+}
+
+%===Keys [FR]
+\defKV[ProjetSMS]{%
+	Hauteur=\def\ProjectSmsHeight{#1},%
+	Largeur=\setlength{\WidthofSMS}{#1},%
+	Marge=\setlength{\OffsetofSMS}{#1},%
+	Couleur=\colorlet{smscolp}{#1},%
+	CouleurFond=\def\ProjectSmsColback{#1},%
+	CouleurR=\def\ProjectSmsColIn{#1},%
+	CouleurE=\def\ProjectSmsColOut{#1},%
+	CouleurTitre=\colorlet{smscoltitle}{#1},%
+	PoliceTxt=\def\ProjectSmsFonte{#1},%
+	Avatar=\def\ProjectSmsAvatar{#1},%
+	TxtEcrire=\def\ProjectSmsWrite{#1}
+}
+\setKVdefault[ProjetSMS]{%
+	Hauteur=auto,%
+	Largeur=7cm,%
+	Marge=1.5cm,%
+	CouleurFond={lightgray!5},%
+	CouleurR=lime!25,%
+	CouleurE=teal!25,%
+	TxtEcrire={Écrire\ldots},%
+	PoliceTxt=\normalfont,%
+	Avatar=\faAddressCard,%
+	AffAvatar=false,%
+	NoirBlanc=false
+}
+
+%===Envt [FR]
+\NewDocumentEnvironment{EnvSMS}{ O{} m }
+{
+	\restoreKV[ProjetSMS]%
+	\setKV[ProjetSMS]{#1}%
+	\def\NameofSMS{#2}%
+		\IfSubStr{\ProjectSmsAvatar}{Image}%
+		{%
+			\StrBehind{\ProjectSmsAvatar}{/}[\tmpimgavatar]%
+			\def\ProjectSmsAvat{\includegraphics[height=0.5cm]{\tmpimgavatar}}%
+			\ifboolKV[ProjetSMS]{AffAvatar}%
+				{%
+					\setlength{\WidthofSMSavatar}{\widthof{\includegraphics[height=0.5\baselineskip]{\tmpimgavatar}}}%
+					\setlength{\MarginofSMSavatar}{\WidthofSMSavatar+2pt}%
+				}%
+				{%
+					\setlength{\MarginofSMSavatar}{0pt}%
+				}%
+		}%
+		{%
+			\def\ProjectSmsAvat{\ProjectSmsAvatar}%
+			\ifboolKV[ProjetSMS]{AffAvatar}%
+				{%
+					\setlength{\WidthofSMSavatar}{\widthof{\tiny\ProjectSmsAvatar}}%
+					\setlength{\MarginofSMSavatar}{\WidthofSMSavatar+2pt}%
+				}%
+				{%
+					\setlength{\MarginofSMSavatar}{0pt}%
+				}%
+		}%
+	\IfStrEq{\ProjectSmsHeight}{auto}%
+		{%
+			\tcbset{SMSsize/.style={width=\WidthofSMS}}%
+		}%
+		{%
+			\setlength{\HeightofSMS}{\ProjectSmsHeight}%
+			\tcbset{SMSsize/.style={width=\WidthofSMS,height=\HeightofSMS,valign=bottom}}%
+		}%
+	\ifboolKV[ProjetSMS]{NoirBlanc}%
+		{%
+			\colorlet{smscolp}{lightgray!25}%
+			\def\ProjectSmsColback{lightgray!5}%
+			\def\ProjectSmsColIn{lightgray!10}%
+			\def\ProjectSmsColOut{lightgray!10}%
+			\colorlet{smscoltitle}{gray}%
+		}%
+		{}%
+	\tcolorbox[SMSsize,SMSglobal]%
+}
+{
+	\endtcolorbox%
+}
+
+%===Macros [FR]
+\NewDocumentCommand\SMSrec{ s m m }{%
+	\ifboolKV[ProjetSMS]{AffAvatar}%
+		{%
+			\IfSubStr{\ProjectSmsAvatar}{Image}%
+				{%
+					\tcbset{SMSAffLogo/.style={left skip=\MarginofSMSavatar,overlay={\node[anchor=north east] at ([yshift={1mm+1pt}]interior.north west) {\includegraphics[height=0.5\baselineskip]{\tmpimgavatar}};}}}%
+				}%
+				{%
+					\tcbset{SMSAffLogo/.style={left skip=\MarginofSMSavatar,overlay={\node[anchor=north east,font=\tiny,text=gray] at ([yshift={1mm+1pt}]interior.north west) {\ProjectSmsAvatar};}}}%
+				}%
+		}%
+		{%
+			\tcbset{SMSAffLogo/.style={}}%
+		}%
+	\tcbox[enhanced,interior code={},before skip=0.5mm,after skip=0.5mm,halign=left,left=1.5mm,right=1.5mm,
+	frame code={
+		\filldraw[\ProjectSmsColIn,draw=black,rounded corners=4pt]
+		(frame.south east) rectangle (frame.north west) ;
+	},
+	width={\WidthofSMS-\OffsetofSMS},top=1mm,bottom=1mm,
+	capture=minipage,fontupper=\small\ProjectSmsFonte,
+	attach boxed title to top left,
+	coltitle=black,fonttitle=\scriptsize\sffamily,
+	boxed title style={size=fbox,bottom=0pt,boxsep=2pt,frame empty,interior empty},
+	title={\@ifpackageloaded{babel}{\NoAutoSpacing#2}{#2}\IfBooleanTF{#1}{$\cdot$\scalebox{0.6}[0.6]{\faCheckCircle[regular]\!\faCheckCircle[regular]}~}{}},left=1mm,right=1mm,boxsep=0mm,SMSAffLogo]{#3}%
+}
+\NewDocumentCommand\SMSenv{ s m m }{%
+	\tcbox[enhanced,interior code={},before skip=0.5mm,after skip=0.5mm,halign=left,left=1.5mm,right=1.5mm,
+	frame code={
+		\filldraw[\ProjectSmsColOut,draw=black,rounded corners=4pt]
+		(frame.south east) rectangle (frame.north west) ;
+	},
+	width={\WidthofSMS-\OffsetofSMS},top=1mm,bottom=1mm,flush right,
+	capture=minipage,fontupper=\small\ProjectSmsFonte,
+	attach boxed title to top right,
+	coltitle=black,fonttitle=\scriptsize\sffamily,
+	boxed title style={size=fbox,bottom=0pt,boxsep=2pt,frame empty,interior empty},
+	title={\@ifpackageloaded{babel}{\NoAutoSpacing#2}{#2}\IfBooleanTF{#1}{}{$\cdot$\scalebox{0.6}[0.6]{\faCheckCircle[regular]\!\faCheckCircle[regular]}~}},left=1mm,right=1mm,boxsep=0mm]{#3}%
+}
+
+
 %%----COMMANDES EN
 
 %====QCMs
@@ -1167,6 +1345,370 @@
 		}}]
 		\pic{fancy box={#2}};
 	\end{tikzpicture}%
+}
+
+%====ROUNDED BOX
+% \defKV[RoundedBox]{hmargin=\def\RoundedBoxDelta{#1},style=\def\RoundedBoxStyle{#1}}
+% \setKVdefault[RoundedBox]{%
+	% bg=red,%
+	% txt=white,%
+	% hmargin=0.25em,%
+	% style=rect
+% }
+
+% \NewDocumentCommand\RoundedBox{ O{} m O{char} }{%
+	% \restoreKV[RoundedBox]%
+	% \setKV[RoundedBox]{#1}%
+	% \settototalheight{\tmpheightbox}{\hbox{(EazertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN)#2}}%hauteur globale
+	% \IfStrEqCase{\RoundedBoxStyle}{%
+		% {rect}{\tikz[remember picture,baseline=(#3.base)]{\node[minimum height=\tmpheightbox,shape=rectangle,rounded corners=0.25em,fill={\useKV[RoundedBox]{bg}},inner sep=0.75pt,outer sep=0pt,text={\useKV[RoundedBox]{txt}}] (#3) {\vphantom{(qE)}\kern\RoundedBoxDelta#2\kern\RoundedBoxDelta};}}%
+		% {circle}{\tikz[remember picture,baseline=(#3.base)]{\node[minimum height=\tmpheightbox,shape=circle,fill={\useKV[RoundedBox]{bg}},inner sep=0.75pt,outer sep=0pt,text={\useKV[RoundedBox]{txt}}] (#3) {\vphantom{(qE)}#2};}}%
+	% }\relax
+% }
+
+%====Chat SMS
+%===Keys [EN]
+\defKV[ProjectSMS]{%
+	height=\def\ProjectSmsHeight{#1},%
+	width=\setlength{\WidthofSMS}{#1},%
+	margin=\setlength{\OffsetofSMS}{#1},%
+	color=\colorlet{smscolp}{#1},%
+	colback=\def\ProjectSmsColback{#1},%
+	colorin=\def\ProjectSmsColIn{#1},%
+	colorout=\def\ProjectSmsColOut{#1},%
+	coltitle=\colorlet{smscoltitle}{#1},%
+	fonttxt=\def\ProjectSmsFonte{#1},%
+	avatar=\def\ProjectSmsAvatar{#1},%
+	writetxt=\def\ProjectSmsWrite{#1}
+}
+\setKVdefault[ProjectSMS]{%
+	height=auto,%
+	width=7cm,%
+	margin=1.5cm,%
+	colback=lightgray!5,%
+	colorin=lime!25,%
+	colorout=teal!25,%
+	writetxt={Write\ldots},%
+	fonttxt=\normalfont,%
+	avatar=\faAddressCard,%
+	dispavatar=false,%
+	blackwhite=false
+}
+
+%===Envt [EN]
+\NewDocumentEnvironment{ChatSMS}{ O{} m }
+{
+	\restoreKV[ProjectSMS]%
+	\setKV[ProjectSMS]{#1}%
+	\def\NameofSMS{#2}%
+	\IfSubStr{\ProjectSmsAvatar}{img}%
+		{%
+			\StrBehind{\ProjectSmsAvatar}{/}[\tmpimgavatar]%
+			\def\ProjectSmsAvat{\includegraphics[height=0.5cm]{\tmpimgavatar}}%
+			\ifboolKV[ProjectSMS]{dispavatar}%
+				{%
+					\setlength{\WidthofSMSavatar}{\widthof{\includegraphics[height=0.5\baselineskip]{\tmpimgavatar}}}%
+					\setlength{\MarginofSMSavatar}{\WidthofSMSavatar+2pt}%
+				}%
+				{%
+					\setlength{\MarginofSMSavatar}{0pt}%
+				}%
+		}%
+		{%
+			\def\ProjectSmsAvat{\ProjectSmsAvatar}%
+			\ifboolKV[ProjectSMS]{dispavatar}%
+				{%
+					\setlength{\WidthofSMSavatar}{\widthof{\tiny\ProjectSmsAvatar}}%
+					\setlength{\MarginofSMSavatar}{\WidthofSMSavatar+2pt}%
+				}%
+				{%
+					\setlength{\MarginofSMSavatar}{0pt}%
+				}%
+		}%
+	\IfStrEq{\ProjectSmsHeight}{auto}%
+		{%
+			\tcbset{SMSsize/.style={width=\WidthofSMS}}%
+		}%
+		{%
+			\setlength{\HeightofSMS}{\ProjectSmsHeight}%
+			\tcbset{SMSsize/.style={width=\WidthofSMS,height=\HeightofSMS,valign=bottom}}%
+		}%
+	\ifboolKV[ProjectSMS]{blackwhite}%
+		{%
+			\colorlet{smscolp}{lightgray!25}%
+			\def\ProjectSmsColback{lightgray!5}%
+			\def\ProjectSmsColIn{lightgray!10}%
+			\def\ProjectSmsColOut{lightgray!10}%
+			\colorlet{smscoltitle}{gray}%
+		}%
+		{}%
+	\tcolorbox[SMSsize,SMSglobal]%
+}
+{
+	\endtcolorbox%
+}
+
+%===Macros [EN]
+\NewDocumentCommand\InSMS{ s m m }{%
+	\ifboolKV[ProjectSMS]{dispavatar}%
+		{%
+			\IfSubStr{\ProjectSmsAvatar}{img}%
+				{%
+					\tcbset{SMSAffLogo/.style={left skip=\MarginofSMSavatar,overlay={\node[anchor=north east] at ([yshift={1mm+1pt}]interior.north west) {\includegraphics[height=0.5\baselineskip]{\tmpimgavatar}};}}}%
+				}%
+				{%
+					\tcbset{SMSAffLogo/.style={left skip=\MarginofSMSavatar,overlay={\node[anchor=north east,font=\tiny,text=gray] at ([yshift={1mm+1pt}]interior.north west) {\ProjectSmsAvatar};}}}%
+				}%
+		}%
+		{%
+			\tcbset{SMSAffLogo/.style={}}%
+		}%
+	\tcbox[enhanced,interior code={},before skip=0.5mm,after skip=0.5mm,halign=left,left=1.5mm,right=1.5mm,
+	frame code={
+		\filldraw[\ProjectSmsColIn,draw=black,rounded corners=4pt]
+		(frame.south east) rectangle (frame.north west) ;
+	},
+	width={\WidthofSMS-\OffsetofSMS},top=1mm,bottom=1mm,
+	capture=minipage,fontupper=\small\ProjectSmsFonte,
+	attach boxed title to top left,
+	coltitle=black,fonttitle=\scriptsize\sffamily,
+	boxed title style={size=fbox,bottom=0pt,boxsep=2pt,frame empty,interior empty},
+	title={#2\IfBooleanTF{#1}{$\cdot$\scalebox{0.6}[0.6]{\faCheckCircle[regular]\!\faCheckCircle[regular]}~}{}},left=1mm,right=1mm,boxsep=0mm,SMSAffLogo]{#3}%
+}
+\NewDocumentCommand\OutSMS{ s m m }{%
+	\tcbox[enhanced,interior code={},before skip=0.5mm,after skip=0.5mm,halign=left,left=1.5mm,right=1.5mm,
+	frame code={
+		\filldraw[\ProjectSmsColOut,draw=black,rounded corners=4pt]
+		(frame.south east) rectangle (frame.north west) ;
+	},
+	width={\WidthofSMS-\OffsetofSMS},top=1mm,bottom=1mm,flush right,
+	capture=minipage,fontupper=\small\ProjectSmsFonte,
+	attach boxed title to top right,
+	coltitle=black,fonttitle=\scriptsize\sffamily,
+	boxed title style={size=fbox,bottom=0pt,boxsep=2pt,frame empty,interior empty},
+	title={#2\IfBooleanTF{#1}{}{$\cdot$\scalebox{0.6}[0.6]{\faCheckCircle[regular]\!\faCheckCircle[regular]}~}},left=1mm,right=1mm,boxsep=0mm]{#3}%
+}
+
+%====SMALL BOXES CREATION
+\tikzset{simpleboxrulearrow/.style={line width=0.8pt,|->,>=latex}}
+
+% \NewTColorBox{SimpleBox}{ O{blue} D<>{} m }{
+	% enhanced,nobeforeafter,blanker,size=small,bottom=1mm,before=\par\noindent,%top=0mm,left=1mm,right=1mm,
+	% title={#3},fonttitle=\sffamily\bfseries\color{#1},lefttitle=1em,
+	% finish={\draw[#1,simpleboxrulearrow] ([xshift=1em]title.west) --++ (-1em,0) |- (frame.south east) -- ($(frame.south east)!0.5!(frame.north east)$) ;},%
+	% #2
+% }
+
+\NewTColorBox{BoiteSimple}{ O{blue} D<>{} m }{
+	enhanced,nobeforeafter,blanker,size=small,bottom=1mm,before=\par\noindent,%top=0mm,left=1mm,right=1mm,
+	title={#3},fonttitle=\sffamily\bfseries\color{#1},lefttitle=1em,
+	finish={\draw[#1,simpleboxrulearrow] ([xshift=1em]title.west) --++ (-1em,0) |- (frame.south east) -- ($(frame.south east)!0.5!(frame.north east)$) ;},%
+	#2
+}
+
+% \NewDocumentCommand\GenSimpleBox{ O{blue} m }{%
+	% 1 = couleur
+	% 2 = nom
+	% \NewTColorBox{#2}{ O{} m }{
+		% enhanced,nobeforeafter,blanker,size=small,bottom=1mm,before=\par\noindent,%top=0mm,left=1mm,right=1mm,
+		% title={##2},fonttitle=\sffamily\bfseries\color{#1},lefttitle=1em,
+		% finish={\draw[#1,simpleboxrulearrow] ([xshift=1em]title.west) --++ (-1em,0) |- (frame.south east) -- ($(frame.south east)!0.5!(frame.north east)$) ;},%
+		% ##1
+	% }
+% }
+
+\NewDocumentCommand\GenereBoiteSimple{ O{blue} m }{%
+	%1 = couleur
+	%2 = nom
+	\NewTColorBox{#2}{ O{} m }{
+		enhanced,nobeforeafter,blanker,size=small,bottom=1mm,before=\par\noindent,%top=0mm,left=1mm,right=1mm,
+		title={##2},fonttitle=\sffamily\bfseries\color{#1},lefttitle=1em,
+		finish={\draw[#1,simpleboxrulearrow] ([xshift=1em]title.west) --++ (-1em,0) |- (frame.south east) -- ($(frame.south east)!0.5!(frame.north east)$) ;},%
+		##1
+	}
+}
+
+%====CIRCLEDNUMBERSSIMPLE
+\defKV[CircledBoxNumber]{bg=\def\tmpbordernbcircbox{#1}}
+\setKVdefault[CircledBoxNumber]{bg={},txt=black,bthick=0.5pt,bcol=black,raise=true}
+
+\newlength{\tmpheightnbcircbox}
+\newlength{\tmpdepthnbcircbox}
+\NewDocumentCommand\CircledNumber{ O{} m O{circnb} }{%
+	\restoreKV[CircledBoxNumber]%
+	\setKV[CircledBoxNumber]{#1}%
+	\settototalheight{\tmpheightnbcircbox}{(1234567890)}%hauteur globale
+	\settodepth{\tmpdepthnbcircbox}{(1234567890)}%
+	\ifboolKV[CircledBoxNumber]{raise}%
+		{%
+			\IfEq{\tmpbordernbcircbox}{}%
+				{%
+					{\tikz[baseline={([yshift=\tmpdepthnbcircbox]current bounding box.south)}]\node[outer sep=0pt,inner sep=0.5pt,minimum height={\tmpheightnbcircbox-\useKV[CircledBoxNumber]{bthick}},draw,{\useKV[CircledBoxNumber]{bcol}},line width={\useKV[CircledBoxNumber]{bthick}},circle,text={\useKV[CircledBoxNumber]{txt}}] (#3) {\ifnum#2<10 #2\else\scalebox{0.5}[1]{#2}\fi} ;}%
+				}%
+				{%
+					{\tikz[baseline={([yshift=\tmpdepthnbcircbox]current bounding box.south)}]\node[outer sep=0pt,inner sep=0.5pt,minimum height={\tmpheightnbcircbox-\useKV[CircledBoxNumber]{bthick}},draw,{\useKV[CircledBoxNumber]{bcol}},line width={\useKV[CircledBoxNumber]{bthick}},circle,fill={\useKV[CircledBoxNumber]{bg}},text={\useKV[CircledBoxNumber]{txt}}] (#3) {\ifnum#2<10 #2\else\scalebox{0.5}[1]{#2}\fi} ;}%
+				}%
+		}%
+		{%
+			\IfEq{\tmpbordernbcircbox}{}%
+				{%
+					{\tikz[baseline=(#3.base)] \node[outer sep=0pt,inner sep=0.5pt,minimum height={\tmpheightnbcircbox-\useKV[CircledBoxNumber]{bthick}},draw,{\useKV[CircledBoxNumber]{bcol}},line width={\useKV[CircledBoxNumber]{bthick}},circle,text={\useKV[CircledBoxNumber]{txt}}] (#3) {\ifnum#2<10 #2\else\scalebox{0.5}[1]{#2}\fi} ;}%
+				}%
+				{%
+					{\tikz[baseline=(#3.base)] \node[outer sep=0pt,inner sep=0.5pt,minimum height={\tmpheightnbcircbox-\useKV[CircledBoxNumber]{bthick}},draw,{\useKV[CircledBoxNumber]{bcol}},line width={\useKV[CircledBoxNumber]{bthick}},circle,fill={\useKV[CircledBoxNumber]{bg}},text={\useKV[CircledBoxNumber]{txt}}] (#3) {\ifnum#2<10 #2\else\scalebox{0.5}[1]{#2}\fi} ;}%
+				}%
+		}%
+}
+
+%====EXAM BOX TITLE(s)
+\NewDocumentCommand\LetPhantomBox{}{%
+	\vphantom{(ÉAZERTYUIOPQSDFGHJKLMWXCVBN,éàço)}%
+}
+
+\tcbset{StyleTitreSujet/.style={%
+	enhanced,size=small,
+	colback=white!5,boxrule=1.25pt,
+	attach boxed title to top left={xshift=0.5cm,yshift=1mm-\tcboxedtitleheight},
+	varwidth boxed title*=-3cm,
+	boxed title style={frame code={
+			\path[fill=tcbcolframe!50!black]
+			([yshift=-1mm,xshift=-1mm]frame.north west)
+			arc[start angle=0,end angle=180,radius=1mm]
+			([yshift=-1mm,xshift=1mm]frame.north east)
+			arc[start angle=180,end angle=0,radius=1mm];
+			\path[fill=tcbcolframe] ([xshift=-2mm]frame.north west) -- ([xshift=2mm]frame.north east) [rounded corners=1mm]-- ([xshift=1mm,yshift=-1mm]frame.north east) -- (frame.south east) -- (frame.south west) -- ([xshift=-1mm,yshift=-1mm]frame.north west) [sharp corners]-- cycle;
+		},interior engine=empty,size=fbox,
+	},
+	fonttitle=\bfseries\sffamily,
+	fontupper=\huge\bfseries\sffamily,
+	}
+}
+
+\defKV[tcbtitresujet]{%
+	AlignH=\def\tcbtitresujethalign{#1}
+}
+
+\setKVdefault[tcbtitresujet]{%
+	Couleur=black,
+	AlignH=center
+}
+
+\NewDocumentEnvironment{TitreSujet}{ O{} D<>{} m }%
+{%
+	\restoreKV[tcbtitresujet]%
+	\setKV[tcbtitresujet]{#1}%
+	\IfStrEqCase{\tcbtitresujethalign}{%
+		{right}{\tcbset{StyleTitreSujetAlign/.style={halign=flush right}}}%
+		{left}{\tcbset{StyleTitreSujetAlign/.style={halign=flush left}}}%
+	}[\tcbset{StyleTitreSujetAlign/.style={halign=flush center}}]%
+	\tcolorbox[colupper={\useKV[tcbtitresujet]{Couleur}},colframe={\useKV[tcbtitresujet]{Couleur}},StyleTitreSujet,StyleTitreSujetAlign,title={\vphantom{QJ}#3},before upper=\LetPhantomBox,after upper=\LetPhantomBox,#2]%
+}%
+{%
+	\endtcolorbox%
+}
+
+\tcbset{StyleTitreSujetSousEpreuve/.style={%
+		center,after skip=1pt,size=small,boxsep=3pt,boxrule=1pt,colback=white,left=2pt,right=2pt,%
+		sharp corners,rounded corners=downhill,arc=8pt,
+		fontupper={\sffamily\bfseries\large}
+	}
+}
+
+\NewDocumentCommand\SousTitreSujetEpreuve{ O{black} m }{%
+	\tcbset{StyleTitreSujetSousEpreuveCouleur/.style={colframe=#1,colupper=#1}}
+	\IfStrEqCase{#2}{%
+		{}{\tcbox[StyleTitreSujetSousEpreuve,StyleTitreSujetSousEpreuveCouleur]{#2}}%
+		{U21}{\tcbox[StyleTitreSujetSousEpreuve,StyleTitreSujetSousEpreuveCouleur,before upper=\faSortNumericDown\:\:,after upper=\:\:\faProjectDiagram]{Épreuve U2 - Mathématiques pour l'Informatique}}%
+		{U2}{\tcbox[StyleTitreSujetSousEpreuve,StyleTitreSujetSousEpreuveCouleur,before upper=\faSortNumericDown\:\:,after upper=\:\:\faProjectDiagram]{Épreuve U2 - Mathématiques pour l'Informatique}}%
+		{U2CG}{\tcbox[StyleTitreSujetSousEpreuve,StyleTitreSujetSousEpreuveCouleur,before upper=\faSortNumericDown\:\:,after upper=\:\:\faProjectDiagram]{Épreuve U2 - Mathématiques appliquées}}%
+		{UF2}{\tcbox[StyleTitreSujetSousEpreuve,StyleTitreSujetSousEpreuveCouleur,before upper=\faDice\:\:,after upper=\:\:\faChartLine]{Épreuve UF2 - Mathématiques Approfondies}}%
+		{U41OL}{\tcbox[StyleTitreSujetSousEpreuve,StyleTitreSujetSousEpreuveCouleur,before upper=\faDice\:\:,after upper=\:\:\faBezierCurve]{Épreuve U41 - Mathématiques}}
+	}%
+}
+
+\NewDocumentCommand\SujetTitreExo{ O{black} m }{%
+	\tcolorbox[enhanced,width=\linewidth,size=small,colback=white,colframe=#1,boxrule=0.75pt,fontupper=\color{#1}\Large\sffamily\bfseries,sharp corners,rounded corners=south,arc=4pt,before upper=\LetPhantomBox]
+	#2
+	\endtcolorbox%
+}
+
+%====vignettes
+\NewDocumentCommand\LetPhantomVignette{}{%
+	\vphantom{(AZERTYUIOPQSDFGHJKLMWXCVBN,éàço)}%
+}
+
+\tcbset{cevignettes/.style={%
+		nobeforeafter,box align=base,boxsep=0pt,enhanced,sharp corners=all,rounded corners=southeast,arc=2pt,boxrule=0.65pt,left=1.75pt,right=1.25pt,top=1.25pt,bottom=0.5pt,colback=white,before upper=\LetPhantomVignette
+	}
+}
+
+\tcbset{cevignettepy/.style={%
+		cevignettes,left=6pt,coltitle=tcbcolframe,
+		underlay={\begin{tcbclipinterior}\fill[fill=tcbcolframe!33]($(interior.south west)$) rectangle node[rotate=90,font=\tiny\sffamily,tcbcolframe!75!black]{\scalebox{0.55}[0.75]{\textbf{PY}}} ($(interior.north west)+(5pt,0pt)$);\end{tcbclipinterior}}
+	}
+}
+
+\tcbset{cevignettealgo/.style={%
+		cevignettes,left=6pt,coltitle=tcbcolframe,
+		underlay={\begin{tcbclipinterior}\fill[fill=tcbcolframe!33]($(interior.south west)$) rectangle node[rotate=90,font=\tiny\sffamily,tcbcolframe!75!black]{\scalebox{0.55}[0.75]{\textbf{ALGO}}} ($(interior.north west)+(5pt,0pt)$);\end{tcbclipinterior}}
+	}
+}
+
+\tcbset{cevignettetableur/.style={%
+		cevignettes,left=6pt,coltitle=tcbcolframe,
+		underlay={\begin{tcbclipinterior}\fill[fill=tcbcolframe!33]($(interior.south west)$) rectangle node[rotate=90,font=\tiny\sffamily,tcbcolframe!75!black]{\scalebox{0.5}[0.75]{\textbf{EXCEL}}} ($(interior.north west)+(5pt,0pt)$);\end{tcbclipinterior}}
+	}
+}
+
+\tcbset{cevignetteMPM/.style={%
+		cevignettes,left=6pt,coltitle=white,
+		underlay={\begin{tcbclipinterior}\fill[fill=tcbcolframe!33]($(interior.south west)$) rectangle node[rotate=90,font=\tiny\sffamily,tcbcolframe!75!black]{\scalebox{0.55}[0.75]{\textbf{MPM}}} ($(interior.north west)+(5pt,0pt)$);\end{tcbclipinterior}}
+	}
+}
+
+\tcbset{cevignettegraph/.style={%
+		cevignettes,left=6pt,coltitle=white,
+		underlay={\begin{tcbclipinterior}\fill[fill=tcbcolframe!33]($(interior.south west)$) rectangle node[rotate=90,font=\tiny\sffamily,tcbcolframe!75!black]{\scalebox{0.55}[0.75]{\textbf{GRPH}}} ($(interior.north west)+(5pt,0pt)$);\end{tcbclipinterior}}
+	}
+}
+
+\tcbset{cevignetteshell/.style={%
+		cevignettes,left=6pt,coltitle=white,
+		underlay={\begin{tcbclipinterior}\fill[fill=tcbcolframe!33]($(interior.south west)$) rectangle node[rotate=90,font=\tiny\sffamily,tcbcolframe!75!black] {\scalebox{0.5}[0.75]{\textbf{SHELL}}} ($(interior.north west)+(5pt,0pt)$);\end{tcbclipinterior}}
+	}
+}
+
+\tcbset{cevignettelatex/.style={%
+		cevignettes,left=6pt,coltitle=white,
+		underlay={\begin{tcbclipinterior}\fill[fill=tcbcolframe!33]($(interior.south west)$) rectangle node[rotate=90,font=\tiny\sffamily,tcbcolframe!75!black]{\scalebox{0.55}[0.75]{\textbf{\LaTeX}}} ($(interior.north west)+(5pt,0pt)$);\end{tcbclipinterior}}
+	}
+}
+
+\tcbset{cevignettexcas/.style={%
+		cevignettes,left=6pt,coltitle=white,colback=white,%
+		underlay={\begin{tcbclipinterior}\fill[fill=tcbcolframe!33]($(interior.south west)$) rectangle node[rotate=90,font=\tiny\sffamily,tcbcolframe!75!black]{\scalebox{0.55}[0.75]{\textbf{XCAS}}} ($(interior.north west)+(5pt,0pt)$);\end{tcbclipinterior}}
+	}
+}
+
+\defKV[cevignette]{Type=\def\cevignettetype{#1},Couleur=\def\cevignettecolor{#1},Police=\def\cevignettefont{#1}}
+\setKVdefault[cevignette]{Type={},Couleur={darkgray},Police=\footnotesize}
+
+\NewDocumentCommand\AffVignette{ s O{} m }{%
+	\restoreKV[cevignette]%
+	\setKV[cevignette]{#2}%
+	\IfStrEqCase{\cevignettetype}{%
+		{}{\tcbox[colframe=\cevignettecolor,fontupper={\cevignettefont},cevignettes]{\IfBooleanTF{#1}{\NoAutoSpacing}{}#3}}%
+		{algo}{\tcbox[colframe=\cevignettecolor,fontupper={\cevignettefont\ttfamily},cevignettealgo]{\IfBooleanTF{#1}{\NoAutoSpacing}{}#3}}%
+		{py}{\tcbox[colframe=\cevignettecolor,fontupper={\cevignettefont\ttfamily},cevignettepy]{\IfBooleanTF{#1}{\NoAutoSpacing}{}#3}}%
+		{pypit}{\tcbox[colframe=\cevignettecolor,fontupper={\cevignettefont\ttfamily},cevignettepy]{\piton{#3}}}%
+		{pyl}{\tcbox[colframe=\cevignettecolor,fontupper={\cevignettefont\ttfamily},cevignettepy]{\piton{\py{#3}}}}%
+		{mpm}{\tcbox[colframe=\cevignettecolor,fontupper={\cevignettefont},cevignetteMPM]{\IfBooleanTF{#1}{\NoAutoSpacing}{}#3}}%
+		{grph}{\tcbox[colframe=\cevignettecolor,fontupper={\cevignettefont},cevignettegraph]{\IfBooleanTF{#1}{\NoAutoSpacing}{}#3}}%
+		{xcas}{\tcbox[colframe=\cevignettecolor,fontupper={\cevignettefont},cevignettexcas]{\IfBooleanTF{#1}{\NoAutoSpacing}{}#3}}%
+		{shell}{\tcbox[colframe=\cevignettecolor,fontupper={\cevignettefont\ttfamily},cevignetteshell]{\IfBooleanTF{#1}{\NoAutoSpacing}{}#3}}%
+		{tex}{\tcbox[colframe=\cevignettecolor,fontupper={\cevignettefont\ttfamily},cevignettelatex]{\IfBooleanTF{#1}{\NoAutoSpacing}{}#3}}%
+		{sheet}{\tcbox[colframe=\cevignettecolor,fontupper={\cevignettefont},cevignettetableur]{\IfBooleanTF{#1}{\NoAutoSpacing}{}#3}}%
+	}\relax%
 }
 
 \endinput

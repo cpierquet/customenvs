@@ -34,8 +34,8 @@
 \usepackage[margin=1.5cm]{geometry}
 \setlength{\parindent}{0pt}
 
-\def\TPversion{0.1.3}
-\def\TPdate{30/03/2024}
+\def\TPversion{0.1.5}
+\def\TPdate{17/05/2024}
 \usepackage{tcolorbox}
 \sethlcolor{lightgray!25}
 \NewDocumentCommand\MontreCode{ m }{%
@@ -110,6 +110,10 @@
 \vfill
 
 \section{History}
+
+\verb|v0.1.5|~:~~~~New macros for boxes with \textsf{tcolorbox} (see \texttt{[fr]} documentation)
+
+\verb|v0.1.4|~:~~~~Create a SMS conversation
 
 \verb|v0.1.3|~:~~~~Environment for exercise(s) (in french doc)
 
@@ -357,7 +361,7 @@ The idea is to :
 
 \begin{itemize}
 	\item present of list of categories and skills ;
-	\item prensented like a pencil.
+	\item presented like a pencil.
 \end{itemize}
 
 The code (within CC-BY-SA 4.0 license) is adapted from :
@@ -418,6 +422,81 @@ The last argument, mandatory and between \MontreCode{(...)} give the list of cat
 \hspace{1cm}
 \PencilSkills[Scale=0.75,BlockWidth=3cm,BlackWhite]<rotate=45>{
     Search/Skill 1\\Skill 2,Model/{Skill 1\\Skill 2}}
+\end{demohigh}
+
+\pagebreak
+
+\section{SMS conversation}
+
+\subsection{Global use}
+
+The idea is to present a conversation of SMS.
+
+\begin{codehigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\begin{ChatSMS}[keys]{name}
+  \InSMS(*){time}{msg}
+  \OutSMS*(*){time}{msg}
+\end{ChatSMS}
+\end{codehigh}
+
+The style is globally fixed, but there's some customization available.
+
+\subsection{The environment}
+
+Available \MontreCode{keys} are :
+
+\begin{itemize}
+	\item \MontreCode{height} : height of the window (auto or specific) ; \MontreCode{auto} by default
+	\item \MontreCode{width} : width of the window ; \MontreCode{7cm} by default
+	\item \MontreCode{margin} : margin (L or R) for the bubble \MontreCode{1.5cm} by default
+	\item \MontreCode{color} : \textit{main} color (banner) ; \MontreCode{teal!75!cyan!75!white} by default ;
+	\item \MontreCode{colback} : color for background ; \MontreCode{lightgray!5} by default
+	\item \MontreCode{colorin} : color for incoming SMS ; \MontreCode{lime!25} by default
+	\item \MontreCode{colorout} : color for outcoming SMS ; \MontreCode{teal!25} by default
+	\item \MontreCode{writetxt} : text of sending zone ; \MontreCode{Write} by default
+	\item \MontreCode{fonttxt} : bubble's font ; \MontreCode{\textbackslash normalfont} by default
+	\item \MontreCode{avatar} : avatar of contact ; \MontreCode{\textbackslash faAddressCard} by default
+	\item \MontreCode{dispavatar} : boolean for displaying avatar near the bubbles ; \MontreCode{false} by default
+	\item \MontreCode{blackwhite} : boolean pour black\&white. \MontreCode{false} by default
+\end{itemize}
+
+The argument, mandatory and between \MontreCode{(...)} give the name of the contact.
+
+\subsection{Macros for the bubbles}
+
+Regarding the bubble creation commands, \MontreCode{\textbackslash InSMS} and \MontreCode{\textbackslash OutSMS}:
+
+\begin{itemize}
+	\item the \textit{starred} version does not display the \textit{checkmarks} of \textit{good reception};
+	\item the first mandatory argument is the time to display ;
+	\item the second mandatory argument is the message to display (including multi-lines).
+\end{itemize}
+
+\subsection{Examples}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+%with a personal image
+\begin{ChatSMS}%
+  [width=6cm,fonttxt=\sffamily,height=10cm,avatar=img/android,dispavatar]{CP}
+  \InSMS{19:23}{Hi !}
+  \OutSMS{19:23}{Hi !\\ How are you ?}
+  \InSMS{19:25}{Just a problem with a math question\ldots}
+  \OutSMS{19:26}{Wanna help ??}
+  \InSMS{19:28}{Yes, I need to compute $\mathsf{\int_{0}^{1} x^2e^{-x}\,dx}$\ldots}
+  \OutSMS*{19:30}{Take care !!}
+\end{ChatSMS}
+\end{demohigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\begin{ChatSMS}%
+  [width=8cm,fonttxt=\sffamily,avatar=\faCanadianMapleLeaf,blackwhite]{CP}
+  \InSMS{19:23}{Hi !}
+  \OutSMS{19:23}{Hi !\\ How are you ?}
+  \InSMS{19:25}{Just a problem with a math question\ldots}
+  \OutSMS{19:26}{Wanna help ??}
+  \InSMS{19:28}{Yes, I need to compute $\mathsf{\int_{0}^{1} x^2e^{-x}\,dx}$\ldots}
+  \OutSMS*{19:30}{Take care !!}
+\end{ChatSMS}
 \end{demohigh}
 
 \end{document}
