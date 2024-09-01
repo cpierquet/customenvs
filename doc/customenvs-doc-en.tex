@@ -34,8 +34,8 @@
 \usepackage[margin=1.5cm]{geometry}
 \setlength{\parindent}{0pt}
 
-\def\TPversion{0.1.5}
-\def\TPdate{17/05/2024}
+\def\TPversion{0.2.1}
+\def\TPdate{01/09/2024}
 \usepackage{tcolorbox}
 \sethlcolor{lightgray!25}
 \NewDocumentCommand\MontreCode{ m }{%
@@ -110,6 +110,18 @@
 \vfill
 
 \section{History}
+
+\verb|v0.2.1|~:~~~Enhancements for \textit{stars skills} + AutoGrid for \TikZ\ (see \textsf{[fr]} doc)
+
+\verb|v0.2.0|~:~~~~Skills with stars (\textsf{fontawesome5} or \TikZ)
+
+\verb|v0.1.9|~:~~~~Title banner
+
+\verb|v0.1.8|~:~~~~Score banner
+
+\verb|v0.1.7|~:~~~~Small patch for \textsf{Vignette} macro (see \texttt{[fr]} documentation)
+
+\verb|v0.1.6|~:~~~~Small patchs for \textsf{displayskip} + \textsf{pas-tableur} (see \texttt{[fr]} documentation)
 
 \verb|v0.1.5|~:~~~~New macros for boxes with \textsf{tcolorbox} (see \texttt{[fr]} documentation)
 
@@ -426,6 +438,60 @@ The last argument, mandatory and between \MontreCode{(...)} give the list of cat
 
 \pagebreak
 
+\pagebreak
+
+\section{Score banner}
+
+\subsection{Global use}
+
+The idea is to insert a score banner, with customizations.
+
+\begin{codehigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+ScoreBanner[keys]{number}
+\end{codehigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+%default output
+\ScoreBanner{}
+\end{demohigh}
+
+\subsection{The macro}
+
+Available \MontreCode{keys} are :
+
+\begin{itemize}
+	\item \MontreCode{Height} : height of the banner (without the legend) ; \MontreCode{1} by default
+	\item \MontreCode{Ratio} : ratio of boxes ; \MontreCode{0.6} by default
+	\item \MontreCode{Symbols} : labels ; \MontreCode{A,B,C,D,E} by default
+	\item \MontreCode{Legend} : legend (uppercase) ; \MontreCode{score} by default ;
+	\item \MontreCode{Font} : global font ; \MontreCode{\textbackslash bfseries\textbackslash sffamily} by default
+	\item \MontreCode{ShowLegend} : boolean for the legend ;  \MontreCode{false} by default ;
+	\item \MontreCode{Colors} : colors for boxes ;
+	
+	\hfill\MontreCode{colorNS1,colorNS2,colorNS3,colorNS4,colorNS5} by default ;
+	\item \MontreCode{ScaleSymbols} : scale H/V of labels ;  \MontreCode{1.25,1.65} by default ;
+	\item \MontreCode{Colbg} : background color for select box  ;  \MontreCode{white} by default.
+\end{itemize}
+
+\smallskip
+
+If the list of colors doesn't fill all the boxes, \MontreCode{lightgray} color is used.
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\ScoreBanner[Legend=Geometry,Height=2]{4}
+\end{demohigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25,style/demo=yellow!25]
+%bg of lower part is yellow!25
+\def\lstcouleurs{colorNS1,colorNS2,colorNS3,colorNS4,colorNS5,purple}
+\ScoreBanner%
+  [ScaleSymbols={1.33,2},Height=3.25,ShowLegend=false,Ratio=0.75,
+  Symbols={1,2,3,4,5,6},Colors=\lstcouleurs,
+  Colbg=yellow!25]{1}
+\end{demohigh}
+
+\pagebreak
+
 \section{SMS conversation}
 
 \subsection{Global use}
@@ -497,6 +563,108 @@ Regarding the bubble creation commands, \MontreCode{\textbackslash InSMS} and \M
   \InSMS{19:28}{Yes, I need to compute $\mathsf{\int_{0}^{1} x^2e^{-x}\,dx}$\ldots}
   \OutSMS*{19:30}{Take care !!}
 \end{ChatSMS}
+\end{demohigh}
+
+\pagebreak
+
+\section{Title banner}
+
+\subsection{Global usage}
+
+The idea is to propose a banner, made with \TikZ, to present for example a title.
+
+The global style is fixed, but few customizations are possible.
+
+\begin{codehigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\tkzBannerTri[keys]{number}{title}
+\end{codehigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\tkzBannerTri{01}{Titre du document}
+\end{demohigh}
+
+Available \MontreCode{keys} are :
+
+\begin{itemize}
+	\item \MontreCode{height} (\MontreCode{2.5em} by default)
+	\item \MontreCode{width} (\MontreCode{\textbackslash linewidth} by default)
+	\item \MontreCode{blockwidth} (\MontreCode{2.75em} by default, but can be set to \MontreCode{auto})
+	\item \MontreCode{coltxt} (\MontreCode{white} by default)
+	\item \MontreCode{fonttxt}
+	\item \MontreCode{swap} (\MontreCode{false} by default, for an other style )
+	\item \MontreCode{maincolor} (\MontreCode{darkgray} by default)
+	\item \MontreCode{collight} (\MontreCode{darkgray!25} by default)
+	\item \MontreCode{colmedium} (\MontreCode{darkgray!50} by default)
+	\item \MontreCode{coldark} (\MontreCode{darkgray} by default)
+	\item \MontreCode{logo}
+	\item \MontreCode{type}
+	\item \MontreCode{dispblock} (\MontreCode{true} by default)
+	\item \MontreCode{num} (\MontreCode{true}  by default)
+	\item \MontreCode{customtype}
+\end{itemize}
+
+\subsection{Examples}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\tkzBannerTri
+  [maincolor=red,type=EXERCISES,blockwidth=auto,logo=\faAddressBook]
+  {7}{My doc}
+\end{demohigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\tkzBannerTri
+  [maincolor=red,type=EXERCISES,blockwidth=5em,logo=\faAddressBook]
+  {7}{My doc}
+\end{demohigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\tkzBannerTri
+  [maincolor=red,type=EXERCISES,blockwidth=auto,logo=\faAddressBook,swap]
+  {07}{My doc}
+\end{demohigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\tkzBannerTri
+  [dispblock=false,maincolor=teal,logo=\faSchool]
+  {}{My doc}
+\end{demohigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\tkzBannerTri
+  [maincolor=olive,customtype=TP,blockwidth=4em,logo=\faAddressBook,height=4em]
+  {7}{My doc}
+\end{demohigh}
+
+It's possible to redefine \MontreCode{\textbackslash part} (for example).
+
+\pagebreak
+
+\section{Various commands}
+
+\subsection{Difficulty levels with stars (fontawesome5)}
+
+\begin{codehigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\DiffLevelStars[max level (3)]{level}
+\end{codehigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\DiffLevelStars{0}\par
+\DiffLevelStars{2.5}\par
+\textcolor{teal}{\LARGE\DiffLevelStars[5]{4}}\par
+\DiffLevelStars[5]{1.5}\par
+\end{demohigh}
+
+\subsection{Difficulty levels with stars (tikz)}
+
+\begin{codehigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\tkzLevelStars[colframe=...,colback=...,offset=...,maxlevel=...,valign=...]{level}
+\end{codehigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\tkzLevelStars{2.5}\par
+{\LARGE We ty inline \tkzLevelStars{2.25} with score 2.25}\par
+{\LARGE We ty inline \tkzLevelStars[valign=false]{1.75} with score 1.75}\par
+\tkzLevelStars[colframe=red,colback=yellow,maxlevel=5]{3}
 \end{demohigh}
 
 \end{document}

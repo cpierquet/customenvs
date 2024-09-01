@@ -13,7 +13,7 @@
 \RequirePackage[scaled=0.925]{cabin} % sf
 %\usepackage{DejaVuSerif}
 %\usepackage[scale=1.1]{inconsolata}
-\usepackage{customenvs}
+\usepackage[pastableur]{customenvs}
 \usepackage{tabularx}
 \usepackage{soul}
 %\usepackage{codehigh}
@@ -39,8 +39,8 @@
 \usepackage[margin=1.5cm]{geometry}
 \setlength{\parindent}{0pt}
 
-\def\TPversion{0.1.5}
-\def\TPdate{17 mai 2024}
+\def\TPversion{0.2.1}
+\def\TPdate{01 septembre 2024}
 \usepackage{tcolorbox}
 \tcbuselibrary{listingsutf8}
 \newtcblisting{DemoCode}[1]{%
@@ -62,14 +62,14 @@
 		keywordstyle={\color{blue}},%
 		classoffset=1,%
 		alsoletter={-},%
-		morekeywords={center,justify,\LstDeuxNiv,\LstTroisNiv,\LstQuatreNiv,\NoticeDeuxNiv,\NoticeTroisNiv,\NoticeQuatreNiv,\DeuxNivBatterie,\TroisNivBatterie,\QuatreNivBatterie,\DeuxNivSmiley,\TroisNivSmiley,\QuatreNivSmiley,\vcenterfa,\faIcon},%
+		morekeywords={center,justify,\LstDeuxNiv,\LstTroisNiv,\LstQuatreNiv,\NoticeDeuxNiv,\NoticeTroisNiv,\NoticeQuatreNiv,\DeuxNivBatterie,\TroisNivBatterie,\QuatreNivBatterie,\DeuxNivSmiley,\TroisNivSmiley,\QuatreNivSmiley,\vcenterfa,\faIcon,part,RenewDocumentCommand,IfBooleanTF},%
 		keywordstyle={\color{violet}},%
 		classoffset=2,%
 		alsoletter={-},%
-		morekeywords={\ReponsesQCM,MultiCols,\CreerListeItems,\ListeChoixItems,\TableauCompetences,\CrayonDeCompetences,\StyleEnvtExo,\StyleEnvtExoDefaut,\TitreExo,\ipsum,EnvSMS,\SMSrec,\SMSenv,BoiteSimple,\SujetTitreExo,\CircledNumber,\AffVignette,\BoiteArrondie},%
+		morekeywords={\ReponsesQCM,MultiCols,\CreerListeItems,\ListeChoixItems,\TableauCompetences,\CrayonDeCompetences,\StyleEnvtExo,\StyleEnvtExoDefaut,\TitreExo,\ipsum,EnvSMS,\SMSrec,\SMSenv,BoiteSimple,\SujetTitreExo,\CircledNumber,\AffVignette,\BoiteArrondie,\ChangerDisplaySkip,\celcouleur,\celfusion,\lignetxt,\colonnetxt,\celnumbreak,\celtxt,\BandeauScore,\InsererImage,\tkzBannerTri,\NiveauDiffExos,\tkzEtoiles,\tkzGrilleAuto,\tkzAutoGridLocal,\tkzAutoGridActivate},%
 		keywordstyle={\color{green!50!black}},%
 		classoffset=3,%
-		morekeywords={Largeur,Filets,EspacesCL,NbCols,Labels,PoliceLabels,EspaceLabels,Swap,Type,CoeffEspVert,EpTrait,Alea,LargeurNivs,Niveaux,NoticeNiveaux,Titre,PolTitre,PolNotice,PolComp,LigneSep,CouleurNotice,CouleurNiveaux,CouleurFond,Note,Notice,PoliceCateg,PoliceBloc,Couleurs,LargeurBloc,Echelle,NoirBlanc,Libelle,EpTrait,Police,Type,ComplementTitre,Titre,CodeDebut,Couleur,EchelleImage,Decoration,Trait,Avatar,AffAvatar,NoirBlanc,CouleurE,CouleurR,CouleurFond,Hauteur,Largeur,PoliceTxt,CouleurTitre,AlignH,bg,txt,bthick,bcol,raise,Type,EspH,Fond,Texte,Style},%
+		morekeywords={Largeur,Filets,EspacesCL,NbCols,Labels,PoliceLabels,EspaceLabels,Swap,Type,CoeffEspVert,EpTrait,Alea,LargeurNivs,Niveaux,NoticeNiveaux,Titre,PolTitre,PolNotice,PolComp,LigneSep,CouleurNotice,CouleurNiveaux,CouleurFond,Note,Notice,PoliceCateg,PoliceBloc,Couleurs,LargeurBloc,Echelle,NoirBlanc,Libelle,EpTrait,Police,Type,ComplementTitre,Titre,CodeDebut,Couleur,EchelleImage,Decoration,Trait,Avatar,AffAvatar,NoirBlanc,CouleurE,CouleurR,CouleurFond,Hauteur,Largeur,PoliceTxt,CouleurTitre,AlignH,bg,txt,bthick,bcol,raise,Type,EspH,Fond,Texte,Style,Dense,Avant,AvantS,Apres,ApresS,Global,align,width,Legende,CouleurFond,Hauteur,Ratio,AffLegende,Couleurs,EchelleSymboles,Symboles,vRemplir,vOffset,vCentrer,height,width,blockwidth,collight,colmedium,coldar,coltxt,fonttxt,swap,maincolor,logo,type,num,dispblock,customtype,Couleur,AlignV,Offset,NiveauMax,pasX,pasY,grilleauto},%
 		keywordstyle={\color{orange}}
 	},%
 	#1
@@ -149,6 +149,20 @@
 
 \section{Historique}
 
+\verb|v0.2.1|~:~~~Amélioration de la gestion des étoiles pour des niveaux de difficultés + Grille auto pour \TikZ\
+
+\verb|v0.2.0|~:~~~Étoiles pour des niveaux de difficultés (compatible avec \texttt{EnvtExo})
+
+\verb|v0.1.9|~:~~~Bannière de titre + Insertion d'images en remplissage vertical
+
+\verb|v0.1.8|~:~~~Nutriscore
+
+\verb|v0.1.7|~:~~~~Possibilité de créer des vignettes \textsf{perso}
+
+\verb|v0.1.6|~:~~~~Patch \textsf{displayskip} + Patches \textsf{pas-tableur}
+
+\verb|v0.1.5|~:~~~~La librairie \texttt{babel} de \TikZ\ n'est plus chargée
+
 \verb|v0.1.5|~:~~~~Vignettes + Numéros encerclés + Création de boîtes 'simples'
 
 \verb|v0.1.4|~:~~~~Commande pour du texte dans une boîte arrondie, de hauteur 'figée' + 'Chat' SMS
@@ -203,7 +217,8 @@ Les packages chargés sont :
 	\item \MontreCode{multicol} ;
 	\item \MontreCode{tabularray} ;
 	\item \MontreCode{xcolor} ;
-	\item \MontreCode{fontawesome5}.
+	\item \MontreCode{fontawesome5} ;
+	\item \MontreCode{tikz} avec les librairies \MontreCode{decorations.pathmorphing,positioning,shapes.misc,calc}.
 \end{itemize}
 
 À noter que, pour des raisons de compatibilité (ou d'incompatibilité), les packages \MontreCode{enumitem}/\MontreCode{multicol}/\MontreCode{tabularray}/\MontreCode{xcolor}/\MontreCode{fontawesome5} peuvent ne pas être chargés par \MontreCode{customenvs} (auxquels cas l'utilisateur devra les avoir chargés pour faire fonctionner certains environnements) via les options :
@@ -792,6 +807,64 @@ L'argument, obligatoire et entre \MontreCode{\{...\}} est la liste des catégori
 
 \pagebreak
 
+\section{Bandeau de score}
+
+\subsection{Principe et fonctionnement}
+
+L'idée est de proposer une commande pour insérer un bandeau de score, type \textit{nutriscore}.
+
+\smallskip
+
+La majorité des éléments sont personnalisables.
+
+\begin{DemoCode}{listing only}
+\BandeauScore[clés]{numéro}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+%sortie par défaut
+\BandeauScore{}
+\end{DemoCode}
+
+\subsection{La commande}
+
+Les \MontreCode{clés} disponibles, à donner entre \MontreCode{[...]}, sont :
+
+\begin{itemize}
+	\item \MontreCode{Hauteur} : hauteur du bandeau (sans la légende) ; \MontreCode{1} par défaut
+	\item \MontreCode{Ratio} : rapport V/H des cases ; \MontreCode{0.6} par défaut
+	\item \MontreCode{Symboles} : contenu des cases ; \MontreCode{A,B,C,D,E} par défaut
+	\item \MontreCode{Legende} : texte de la légende (qui sera en majuscule) ; \MontreCode{score} par défaut ;
+	\item \MontreCode{Police} : Police globale ; \MontreCode{\textbackslash bfseries\textbackslash sffamily} par défaut
+	\item \MontreCode{AffLegende} : booléen pour afficher la légende ;  \MontreCode{false} par défaut ;
+	\item \MontreCode{Couleurs} : couleurs des cases ;
+	
+	\hfill\MontreCode{couleurNS1,couleurNS2,couleurNS3,couleurNS4,couleurNS5} par défaut ;
+	\item \MontreCode{EchelleSymboles} : échelle(s) H/V des symboles ;  \MontreCode{1.25,1.65} par défaut ;
+	\item \MontreCode{CouleurFond} : couleur du fond (pour la case choisie)  ;  \MontreCode{white} par défaut.
+\end{itemize}
+
+L'argument obligatoire correspond quant à lui au numéro de la case à mettre en valeur (\MontreCode{vide} par défaut).
+
+\smallskip
+
+Si la liste des couleurs ne permet pas de remplir toutes les cases, la couleur \MontreCode{lightgray} est utilisée.
+
+\begin{DemoCode}{}
+\BandeauScore[Legende=Géométrie,Hauteur=2]{4}
+\end{DemoCode}
+
+\begin{DemoCode}{colbacklower=yellow!25}
+%le fond de la boîte a été défini sur yellow!25
+\def\lstcouleurs{couleurNS1,couleurNS2,couleurNS3,couleurNS4,couleurNS5,purple}
+\BandeauScore%
+	[EchelleSymboles={1.33,2},Hauteur=2,AffLegende=false,
+	Symboles={1,2,3,4,5,6},Couleurs=\lstcouleurs,
+	CouleurFond=yellow!25]{1}
+\end{DemoCode}
+
+\pagebreak
+
 \section{Fenêtre type conversation instantanée}
 
 \subsection{Principe et fonctionnement}
@@ -887,6 +960,8 @@ Les éléments personnalisables sont :
 \begin{itemize}
 	\item le libellé via la clé \MontreCode{[Libelle]}, qui vaut \MontreCode{Exercice~} par défaut ;
 	\item la couleur via la clé \MontreCode{[Couleur]}, qui vaut \MontreCode{blue!50!black} par défaut ;
+	\item la couleur de la décoration (si textuelle) via la clé \MontreCode{[CouleurDeco]}, qui vaut \MontreCode{blue!50!black} par défaut ;
+	\item la couleur de fond la décoration (si il existe) via la clé \MontreCode{[CouleurFondDeco]}, qui vaut 50\,\% de \MontreCode{blue!50!black} par défaut ;
 	\item la police via la clé \MontreCode{[Police]}, qui vaut \MontreCode{\textbackslash bfseries\textbackslash LARGE\textbackslash sffamily} par défaut ;
 	\item l'épaisseur du trait (éventuel) via la clé \MontreCode{[EpTrait]}, qui vaut \MontreCode{1.1pt} par défaut.
 \end{itemize}
@@ -934,13 +1009,12 @@ Hormis le style global, il est possible de modifier/ajouter certains éléments 
 		\item des points, sous la forme \texttt{(xx points)} ;
 		\item une image, via \texttt{graphicx}, dont la hauteur est adaptée à la hauteur de la ligne en cours ;
 		\item une icône, via \texttt{fontawesome5}, dont la hauteur est adaptée à la hauteur de la ligne en cours ;
+		\item des étoiles, via \texttt{fontawesome5} ou \TikZ, dont la hauteur est adaptée à la hauteur de la ligne en cours ;
 		\item un petit chronomètre, via \texttt{pictochrono}, dont la hauteur est adaptée à la hauteur de la ligne en cours ;
 		\item une ceinture colorée, via \texttt{coloredbelts}, dont la hauteur est adaptée à la hauteur de la ligne en cours ;
 	\end{itemize}
 	\item le compteur (nommé \MontreCode{numeroexo}) peut être désactivé et \textit{adpaté} via les commandes classiques de compteurs.
 \end{itemize}
-
-\pagebreak
 
 Les \MontreCode{clés} disponibles, à donner entre \MontreCode{[...]}, sont :
 
@@ -957,6 +1031,8 @@ Les \MontreCode{clés} disponibles, à donner entre \MontreCode{[...]}, sont :
 		\item \MontreCode{Ceinture/...} := afficher la ceinture couleur \MontreCode{...} à la fin de la ligne ;
 		\item \MontreCode{Chrono/...} := afficher le chrono de durée \MontreCode{...} à la fin de la ligne ;
 		\item \MontreCode{Points/...} := afficher les points \MontreCode{(... points)} à la fin de la ligne ;
+		\item \MontreCode{faEtoiles/...} := afficher des étoiles de difficultés à la fin de la ligne ;
+		\item \MontreCode{tkzEtoiles/...} := afficher des étoiles de difficultés à la fin de la ligne ;
 	\end{itemize}
 	\item \MontreCode{Trait} : choix du trait parmi :
 	\begin{itemize}
@@ -966,6 +1042,34 @@ Les \MontreCode{clés} disponibles, à donner entre \MontreCode{[...]}, sont :
 		\item \MontreCode{dashilles} := pointilles \textit{dash} (\texttt{\textbackslash hdashrule}).
 	\end{itemize}
 \end{itemize}
+
+La commande d'affichage des étoiles de difficultés est indépendante de l'environnement \MontreCode{EnvtExo}, la clé \MontreCode{Decoration=xxxEtoiles/niv} ou \MontreCode{Decoration=xxxEtoiles/niv§max} permet de l'y intégrer.
+
+\begin{DemoCode}{listing only}
+%commande d'étoiles (max=3 par défaut) avec fontawesome5
+\NiveauDiffExos[max]{nb}
+
+%commande d'étoiles (max=3 par défaut) avec tikz
+\tkzEtoiles[Couleur=...,CouleurFond=...,Offset=...,NiveauMax=...,AlignV=...]{nb}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+%des demies étoiles sont possibles
+\NiveauDiffExos{0}\par
+\NiveauDiffExos{2.5}\par
+\textcolor{teal}{\LARGE\NiveauDiffExos[5]{4}}\par
+\NiveauDiffExos[5]{1.5}\par
+\end{DemoCode}
+
+\begin{DemoCode}{}
+%des portions d'étoiles sont possibles
+%Offset=... permet de gérer l'espacement horizontal
+%AlignV est un booléen pour décaler verticalement les étoiles (inline)
+\tkzEtoiles{2.5}\par
+{\LARGE On essaye en ligne \tkzEtoiles{2.5} avec une note de 2.5}\par
+{\LARGE On essaye en ligne \tkzEtoiles[AlignV=false]{2.5} avec une note de 2.5}\par
+\tkzEtoiles[Couleur=red,CouleurFond=yellow,NiveauMax=5]{3.5}
+\end{DemoCode}
 
 \subsection{Exemples}
 
@@ -994,65 +1098,46 @@ Le code proposé utilise l'environnement, mais la commande simple est complètem
 \pagebreak
 
 \begin{DemoCode}{listing only}
-\begin{EnvtExo}%exo1
+\begin{EnvtExo}\ipsum<Lang=FR,Type=sent>\end{EnvtExo}%exo1
+
+\begin{EnvtExo}[Trait=pointilles]\ipsum<Lang=FR,Type=sent>\end{EnvtExo}%exo2
+
+\begin{EnvtExo}[Trait=dashilles]\ipsum<Lang=FR,Type=sent>\end{EnvtExo}%exo3
+
+\begin{EnvtExo}[Decoration=Icone/\faPython]\ipsum<Lang=FR,Type=sent>\end{EnvtExo}%exo4
+
+\begin{EnvtExo}[Decoration=Ceinture/rouge]\ipsum<Lang=FR,Type=sent>\end{EnvtExo}%exo5
+
+\begin{EnvtExo}[Decoration=Chrono/20]\ipsum<Lang=FR,Type=sent>\end{EnvtExo}%exo6
+
+\begin{EnvtExo}[Decoration=Image/goku_ssj4]\ipsum<Lang=FR,Type=sent>\end{EnvtExo}%exo7
+
+\begin{EnvtExo}[Decoration=faEtoiles/1.5§4]\ipsum<Lang=FR,Type=sent>\end{EnvtExo}%exo8
+
+\begin{EnvtExo}[Decoration=tkzEtoiles/3.5§5]\ipsum<Lang=FR,Type=sent>\end{EnvtExo}%exo8
+
+\begin{EnvtExo}[Decoration=Points/7]\ipsum<Lang=FR,Type=sent>\end{EnvtExo}%exo9
+
+\begin{EnvtExo}[Type=Perso/{Titre perso }]\ipsum<Lang=FR,Type=sent>\end{EnvtExo}%exo10
+
+\StyleEnvtExo[Couleur=red,CouleurDeco=teal,Police=\bfseries\ttfamily,EpTrait=2pt, Libelle={Exercice n°}]
+
+\begin{EnvtExo}[Decoration=Icone/\faAddressBook]
 \ipsum<Lang=FR,Type=sent>
-\end{EnvtExo}
+\end{EnvtExo}%exo11
 
-\begin{EnvtExo}[Trait=pointilles]%exo2
-\ipsum<Lang=FR,Type=sent>
-\end{EnvtExo}
 
-\begin{EnvtExo}[Trait=dashilles]%exo3
-\ipsum<Lang=FR,Type=sent>
-\end{EnvtExo}
-
-\begin{EnvtExo}[Decoration=Icone/\faPython]%exo4
-\ipsum<Lang=FR,Type=sent>
-\end{EnvtExo}
-
-\begin{EnvtExo}[Decoration=Ceinture/rouge]%exo5
-\ipsum<Lang=FR,Type=sent>
-\end{EnvtExo}
-
-\begin{EnvtExo}[Decoration=Chrono/20]%exo6
-\ipsum<Lang=FR,Type=sent>
-\end{EnvtExo}
-
-\begin{EnvtExo}[Decoration=Image/goku_ssj4]%exo7
-\ipsum<Lang=FR,Type=sent>
-\end{EnvtExo}
-
-\begin{EnvtExo}[Decoration=Image/sseiya_shura]%exo8
-\ipsum<Lang=FR,Type=sent>
-\end{EnvtExo}
-
-\begin{EnvtExo}[Decoration=Points/7]%exo9
-\ipsum<Lang=FR,Type=sent>
-\end{EnvtExo}
-
-\begin{EnvtExo}[Type=Perso/{Titre perso }]%exo10
-\ipsum<Lang=FR,Type=sent>
-\end{EnvtExo}
-
-\StyleEnvtExo[Couleur=red,Police=\bfseries\ttfamily,EpTrait=2pt,Libelle={Exercice n°}]
-
-\begin{EnvtExo}[Decoration=Icone/\faAddressBook]%exo11
-\ipsum<Lang=FR,Type=sent>
-\end{EnvtExo}
-
-\begin{EnvtExo}[Type=Perso/{Titre perso },Decoration=Chrono/25,Couleur=red,Trait=dashilles]%exo12
+\begin{EnvtExo}[Type=Perso/{Titre perso },Decoration=Chrono/25,Trait=dashilles]%exo12
 \ipsum<Lang=FR,Type=sent>
 \end{EnvtExo}
 
 \StyleEnvtExoDefaut
-
 \begin{EnvtExo}%
 	[Type=Perso/{Titre perso~},Decoration=Image/goku_ssj4,Trait=non,Compteur=false]%exo13
 \ipsum<Lang=FR,Type=sent>
 \end{EnvtExo}
 
 \TitreExo[Type=Perso/{Annexe Exercice 3},Compteur=false,Decoration=Image/sseiya_aiolos]%exo14
-
 \ipsum<Lang=FR,Type=sent>
 \end{DemoCode}
 
@@ -1216,6 +1301,12 @@ En ligne \CircledNumber{1} avec texte après.
 \end{DemoCode}
 
 \begin{DemoCode}{}
+%vignette type tableur
+\AffVignette[Type=perso/CRYPT,Couleur=blue!50!teal,Echelle=0.5]
+    {vignette personnalisée}
+\end{DemoCode}
+
+\begin{DemoCode}{}
 %création d'une macro personnelle
 \NewDocumentCommand\VignetteTableur{ m }{%
 	\AffVignette*[Type=sheet,Couleur=green!50!black,Police=\footnotesize\sffamily]
@@ -1234,5 +1325,283 @@ On se place dans la plage \VignetteTableur{A3:B5} pour...
 \begin{DemoCode}{}
 On lance le logiciel \BoiteArrondie[Fond=cyan!33,Texte=violet,EspH=2mm,Style=rect]{situé sur le bureau} en cliquant \BoiteArrondie[Fond=lightgray!25,Texte=darkgray]{droit}.
 \end{DemoCode}
+
+\subsection{Bannière de titre}
+
+L'idée est de proposer une bannière, réalisée en \TikZ, pour présenter par exemple un titre.
+
+Il sera ensuite possible de redéfinir un sectionnement du document (\MontreCode{part/section/subsection/...}).
+
+Le style global est fixé, mais des éléments de personnalisations sont possibles (des calculs en interne sont effectués pour adapter la taille des textes).
+
+\begin{DemoCode}{listing only}
+\tkzBannerTri[clés]{numéro}{titre}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\tkzBannerTri{01}{Titre du document}
+\end{DemoCode}
+
+Les principales \MontreCode{clés} (anglicisées) sont :
+
+\begin{itemize}
+	\item \MontreCode{height} : hauteur de la bannière (\MontreCode{2.5em} par défaut)
+	\item \MontreCode{width} : largeur de la bannière (\MontreCode{\textbackslash linewidth} par défaut)
+	\item \MontreCode{blockwidth} : largeur du bloc gauche (\MontreCode{2.75em} par défaut, mais si \MontreCode{auto}, la largeur s'adaptera à son contenu)
+	\item \MontreCode{coltxt} : couleur des textes (\MontreCode{white} par défaut)
+	\item \MontreCode{fonttxt} : police globale des textes (\MontreCode{white} par défaut)
+	\item \MontreCode{swap} : booléen pour changer le style de la partie droite (\MontreCode{false} par défaut)
+	\item \MontreCode{maincolor} : couleur principale, les dégradés étant calculés automatiquement (\MontreCode{darkgray} par défaut)
+	\item \MontreCode{collight} : couleur la plus claire (\MontreCode{darkgray!25} par défaut)
+	\item \MontreCode{colmedium} : couleur du milieu (\MontreCode{darkgray!50} par défaut)
+	\item \MontreCode{coldark} : couleur la plus foncée (\MontreCode{darkgray} par défaut)
+	\item \MontreCode{logo} : logo éventuel, placé tout à droite
+	\item \MontreCode{type} : type éventuel du document, qui est dans le bloc gauche
+	\item \MontreCode{dispblock} : booléen pour afficher le bloc de gauche (actif par défaut)
+	\item \MontreCode{num} : booléen pour afficher le numéro (actif par défaut)
+	\item \MontreCode{customtype} : texte personnalisé éventuel du bloc gauche
+\end{itemize}
+
+\begin{DemoCode}{}
+\tkzBannerTri
+	[maincolor=red,type=EXERCICES,blockwidth=auto,logo=\faAddressBook]
+	{7}{Mon document}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\tkzBannerTri
+	[maincolor=red,type=EXERCICES,blockwidth=5em,logo=\faAddressBook]
+	{7}{Mon document}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\tkzBannerTri[%
+	maincolor=red,type=EXERCICES,blockwidth=auto,logo=\faAddressBook,swap]
+	{07}{Mon document}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\tkzBannerTri
+	[dispblock=false,maincolor=teal,logo=\faSchool]
+	{}{Mon document}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\tkzBannerTri
+	[maincolor=olive,customtype=TP,blockwidth=4em,logo=\faAddressBook,height=4em]
+	{7}{Mon document}
+\end{DemoCode}
+
+Il est de ce fait \textit{normalement} possible (à vérifier quand même\ldots) de modifier le comportement de la commande \MontreCode{\textbackslash part}, dans l'optique de l'utilisation avec une table des matières notamment.
+
+\begin{DemoCode}{}
+%redéfinition de \part avec gestion de la version étoilée
+\RenewDocumentCommand\part{ s m D<>{} }{%
+	\addtocounter{part}{1}%
+	\IfBooleanTF{#1}%
+		{%
+			\tkzBannerTri[#3,num=false]{\thepart}{#2}%
+		}%
+		{%
+			\tkzBannerTri[#3]{\thepart}{#2}%
+			%\addcontentsline{toc}{part}{#2}%éventuellement
+		}%
+}
+%modification de la numérotation, avec forçage du 0
+\renewcommand\thepart{\ifnum\value{part}<10\relax0\fi\arabic{part}}
+
+\part{Éléments de logique}<type=TP,logo=\faAirbnb>
+\end{DemoCode}
+
+\pagebreak
+
+\section{Patchs divers}
+
+\subsection{Gérer l'espacement vertical du mode hors-ligne}
+
+L'idée est de proposer une commande, à insérer dans le préambule, pour \textit{patcher} l'espacement vertical proposé par les environnements mathématiques hors-ligne.
+
+\begin{DemoCode}{listing only}
+...
+\ChangerDisplaySkip[clés]
+...
+\begin{document}
+\end{DemoCode}
+
+Les \MontreCode{clés} disponibles, à donner entre \MontreCode{[...]}, sont :
+
+\begin{itemize}
+	\item \MontreCode{Avant=...} : modification de l'espacement avant ;
+	\item \MontreCode{AvantS=...} : modification de l'espacement avant (version \textit{short}) ;
+	\item \MontreCode{Apres=...} : modification de l'espacement après ;
+	\item \MontreCode{ApresS=...} : modification de l'espacement après (version \textit{short}) ;
+	\item \MontreCode{Global=...} : modification globale de \textbf{tous} les espacements ;
+	\item \MontreCode{Dense} : booléen pour modification globale en \MontreCode{0.33\textbackslash baselineskip}.
+\end{itemize}
+
+\subsection{Quelques ajouts au package pas-tableur}
+
+L'idée est de proposer quelques commandes complémentaires pour le package \textsf{pas-tableur}, de Stéphane Pasquet (\url{https://ctan.org/pkg/pas-tableur}), en respectant autant que faire se peut la syntaxe du package (voir la documentation pour de plus amples informations).
+
+\smallskip
+
+Le package \textsf{pas-tableur} n'est pas chargé par défaut, mais il peut l'être grâce à l'option \MontreCode{[pastableur]}.
+
+\smallskip
+
+Les \textit{ajouts} disponibles sont :
+
+\begin{itemize}
+	\item colorer/griser une case, via \MontreCode{\textbackslash celcouleur} ;
+	\item fusionner des celules, via \MontreCode{\textbackslash celfusion} ;
+	\item \textit{casser la numérotation} avec des pointillés, via \MontreCode{\textbackslash celnumbreak} ;
+	\item remplir (partiellement ou non) une ligne,  via \MontreCode{\textbackslash lignetxt} ;
+	\item remplir (partiellement ou non) une colonne,  via \MontreCode{\textbackslash colonnetxt}.
+\end{itemize}
+
+\begin{DemoCode}{listing only}
+%chargement du package
+\usepackage[pastableur]{customenvs}
+
+%griser une cellule
+\celcouleur[couleur]{col-lig}
+
+%fusionner des cellules
+\celfusion[options pas-tableur]{col-lig}{col-lig}{label}
+
+%pointillés dans la numérotation
+\celnumbreak{num ligne pointillés}{début numéro suite}{fin numéro suite}
+
+%remplir ligne
+\lignetxt(*)[options pas-tableur]{num ligne}<col début>{liste des cellules}
+
+%remplir colonne
+\colonnetxt(*)[options pas-tableur]{num colonne}<lgn début>{liste des cellules}
+\end{DemoCode}
+
+\pagebreak
+
+L'exemple suivant illustre les différentes commandes proposées dans ce package.
+
+\begin{DemoCode}{}
+\begin{tikzpicture}{}
+	\tableur*[10]{A/2.5cm,B/2.5cm,C/2.5cm,D/2.5cm,E/2.5cm,F/2.5cm}
+	%ligne n°1
+	\celtxt*[align=center]{A}{1}{$n$}
+	\celfusion[align=center]{B-1}{C-1}{$M_n$}
+	\celfusion[align=center]{D-1}{E-1}{$S_n$}
+	\celtxt*[align=center]{F}{1}{$d_n$}
+	%		%Ligne2/3/4
+	\celcouleur{A-2}
+	\lignetxt*[align=center]{2}<2>{$x_n$,$y_n$,5,$n$,$n$} %à partir de la colonne n°2
+	\lignetxt*[align=center]{3}{0,0,0,5,0,5}
+	\lignetxt*[align=center]{4}{1,1,0,5,1,4.12310563}%
+	\celnumbreak{8}{27}{28}
+	%colonneA
+	\colonnetxt*[align=center]{A}<5>{2,3,4,\dots,24,25}   %à partir de la ligne n°5
+\end{tikzpicture}
+\end{DemoCode}
+
+\subsection{Insertion d'images avec remplissage de l'espace vertical}
+
+L'idée est de proposer une commande pour adapter la hauteur d'une image à la hauteur restante en base de page.
+
+Cela repose en fait simplement sur l'utilisation de \MontreCode{[height=\textbackslash dimexpr\textbackslash pagegoal-\textbackslash pagetotal\textbackslash relax]}.
+
+\begin{DemoCode}{listing only}
+\InsererImage<vRemplir=true/false,vOffset=...,vCentrer=...>[clés includegraphics]<image>
+\end{DemoCode}
+
+La clé \MontreCode{vOffset} permet de spécifier une longueur à retirer au calcul automatique (par défaut elle est fixée à \MontreCode{0pt})..
+
+La clé \MontreCode{vCentrer} (parmi \MontreCode{m/h/b/n} permet de spécifier un type de centrage vertical, si besoin, parmi \MontreCode{milieu/haut/bas/non} (\MontreCode{n} par défaut).
+
+\begin{DemoCode}{listing only}
+\InsererImage<vRemplir,vOffset=5mm,vCentrer=m>{example-image}
+\end{DemoCode}
+
+\InsererImage<vRemplir,vOffset=5mm,vCentrer=m>{example-image}
+
+\subsection{Grille automatique pour les environnements tikzpicture}
+
+L'idée est de proposer de quoi afficher, en \textit{surimpression}, une grille automatique sur une figure \MontreCode{tikzpicture}.
+
+Cela peut-être utile dans la construction de graphes ou de figures géométriques pour placer plus facilement des objets.
+
+\smallskip
+
+Il est possible de :
+
+\begin{itemize}
+	\item demander ponctuellement l'affichage avec une macro à placer en fin d'environnement ;
+	\item automatiser l'affichage pour une figure avec une \MontreCode{clé} et une macro locale ;
+	\item automatiser l'affichage pour toutes les figures avec une macro globale et une \MontreCode{clé}.
+\end{itemize}
+
+\textbf{\large Version manuelle}
+
+\begin{DemoCode}{listing only}
+%macro locale, utilisation ponctuelle
+\begin{tikzpicture}
+	%codes
+	\tkzGrilleAuto(*){pasX§pasY}
+\end{tikzpicture}
+\end{DemoCode}
+
+La version étoilée marque également l'origine $(0;0)$.
+
+L'argument obligatoire permet de spécifier les pas (\texttt{H§V}) pour la grille.
+
+\begin{DemoCode}{}
+\begin{tikzpicture}
+	%population
+	\draw[very thick,purple] (0,0) circle[x radius=3cm,y radius=2cm] ;
+	\draw[purple] (0.5,1.25) node[font=\small] {Population E} ;
+	%ss population
+	\draw[very thick,teal] (-0.75,-0.25) circle[x radius=1.75cm,y radius=1cm] ;
+	\draw[teal] (-0.75,-0.25) node[font=\small] {Sous-population A} ;
+	%grille auto manuelle, avec origine
+	\tkzGrilleAuto*{0.5§0.5}
+\end{tikzpicture}
+\end{DemoCode}
+
+\textbf{\large Version automatique locale, avec clé}
+
+\begin{DemoCode}{listing only}
+%clé locale, utilisation ponctuelle
+\begin{tikzpicture}[grilleauto=pasX§pasY]
+	\tkzAutoGridLocal(*)
+	%codes
+\end{tikzpicture}
+\end{DemoCode}
+
+La version étoilée marque également l'origine $(0;0)$.
+
+\begin{DemoCode}{}
+\begin{tikzpicture}[x=0.5cm,y=0.5cm,grilleauto=0.25§0.25]
+	%grille (qui sera affichée en dernier)
+	\tkzAutoGridLocal*
+	%triangle
+	\draw[very thick,red] (-4,-2)--(0,7)--(6,1)--cycle ;
+	%cercle
+	\draw[very thick,blue] (0,0) circle[radius=5] ;
+	%segment
+	\draw[very thick,orange] (-1.75,1.25)--(1,-7);
+\end{tikzpicture}
+\end{DemoCode}
+
+\textbf{\large Version automatique globale, avec clé}
+
+\begin{DemoCode}{listing only}
+%préambule, la commande sera active pour tous les environnements tikz
+\tkzAutoGridActivate(*)
+
+%document
+\begin{tikzpicture}[grilleauto=pasX§pasY]
+	%codes
+\end{tikzpicture}
+\end{DemoCode}
+
+La version étoilée marquera également l'origine $(0;0)$.
 
 \end{document}
