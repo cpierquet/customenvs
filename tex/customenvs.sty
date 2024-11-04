@@ -3,9 +3,14 @@
 % source pencil...: CC-BY-SA 4.0 https://tex.stackexchange.com/questions/504092/replicating-a-fancy-bordered-text-style-in-latex/504145#504145
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{customenvs}[2024/09/01 0.2.1 Custom classic environments]
+\ProvidesPackage{customenvs}[2024/11/04 0.2.6 Custom classic environments]
 
 %====HISTORIQUE
+% v 0.2.6	Roue des compétences / SkillsWheel / speedometer
+% v 0.2.5	Modification mineure des points dans l'environnement EnvtExo
+% v 0.2.4	Petite boîte marker
+% v 0.2.3	Panneau autoroutier + Panneau Soldes
+% v 0.2.2	Flèche évasée, en TikZ
 % v 0.2.1	Modification mineure de la gestion des étoiles tikz (baseline) + grille auto tikzpicture
 % v 0.2.0	Ajout d'étoiles pour les difficultés d'exercices (2 versions)
 % v 0.1.9	tkzBanner + tkzBannerTri + includegraphicsfill
@@ -945,14 +950,22 @@
 			\IfSubStr{\EnvtExoDeco}{Points}%
 				{%
 					\StrBehind{\EnvtExoDeco}{/}[\EnvtExoPts]%
-					\IfStrEq{\EnvtExoPts}{1}{\def\pts{point}}{\def\pts{points}}%
-					\,\textcolor{macouleurexodeco}{(\EnvtExoPts\ \pts)}%
+					\xintifboolexpr{ \EnvtExoPts <= 1 }{\def\pts{point}}{\def\pts{points}}%
+					%\IfStrEq{\EnvtExoPts}{1}{\def\pts{point}}{\def\pts{points}}%
+					%\,\textcolor{macouleurexodeco}{(\num{\EnvtExoPts} \pts)}%
+					\,\textcolor{macouleurexodeco}{(\StrSubstitute{\EnvtExoPts}{.}{{{,}}}\ \pts)}%
 				}{}%
 			\IfSubStr{\EnvtExoDeco}{Image}%
 				{%
 					\StrBehind{\EnvtExoDeco}{/}[\EnvtExoImg]%
 					\settototalheight{\tmp@image@hauteur@totale}{\hbox{\tmpstyleexo qB}}%
 					\,$\vcenter{\hbox{\includegraphics[height=\EnvtExoScaleImg\tmp@image@hauteur@totale]{\EnvtExoImg}}}$%
+				}{}%
+			\IfSubStr{\EnvtExoDeco}{Speedo}%
+				{%
+					\StrBehind{\EnvtExoDeco}{/}[\EnvtExoLevel]%
+					\StrCut{\EnvtExoLevel}{§}{\EnvtExoLevelSk}{\EnvtExoLevelTo}%
+					\,\MiniCompteurNiveaux[Couleurs=macouleurexodeco,Marqueur=\EnvtExoLevelSk]{\EnvtExoLevelTo}%
 				}{}%
 			\IfSubStr{\EnvtExoDeco}{faEtoiles}%
 				{%
@@ -1023,8 +1036,10 @@
 			\IfSubStr{\EnvtExoDeco}{Points}%
 				{%
 					\StrBehind{\EnvtExoDeco}{/}[\EnvtExoPts]%
-					\IfStrEq{\EnvtExoPts}{1}{\def\pts{point}}{\def\pts{points}}%
-					\,\textcolor{macouleurexodeco}{(\EnvtExoPts\ \pts)}%
+					\xintifboolexpr{ \EnvtExoPts <= 1 }{\def\pts{point}}{\def\pts{points}}%
+					%\IfStrEq{\EnvtExoPts}{1}{\def\pts{point}}{\def\pts{points}}%
+					%\,\textcolor{macouleurexodeco}{(\num{\EnvtExoPts} \pts)}%
+					\,\textcolor{macouleurexodeco}{(\StrSubstitute{\EnvtExoPts}{.}{{{,}}}\ \pts)}%
 				}{}%
 			\IfSubStr{\EnvtExoDeco}{Image}%
 				{%
@@ -1114,8 +1129,9 @@
 			\IfSubStr{\EnvtExoDeco}{Points}%
 				{%
 					\StrBehind{\EnvtExoDeco}{/}[\EnvtExoPts]%
-					\IfStrEq{\EnvtExoPts}{1}{\def\pts{point}}{\def\pts{points}}%
-					\,(\EnvtExoPts\ \pts)%
+					\xintifboolexpr{ \EnvtExoPts <= 1 }{\def\pts{point}}{\def\pts{points}}%
+					%\,(\EnvtExoPts\ \pts)%
+					\,\textcolor{macouleurexodeco}{(\StrSubstitute{\EnvtExoPts}{.}{{{,}}}\ \pts)}%
 				}{}%
 			\IfSubStr{\EnvtExoDeco}{Image}%
 				{%
@@ -1192,8 +1208,9 @@
 			\IfSubStr{\EnvtExoDeco}{Points}%
 				{%
 					\StrBehind{\EnvtExoDeco}{/}[\EnvtExoPts]%
-					\IfStrEq{\EnvtExoPts}{1}{\def\pts{point}}{\def\pts{points}}%
-					\,(\EnvtExoPts\ \pts)%
+					\xintifboolexpr{ \EnvtExoPts <= 1 }{\def\pts{point}}{\def\pts{points}}%
+					%\,(\EnvtExoPts\ \pts)%
+					\,\textcolor{macouleurexodeco}{(\StrSubstitute{\EnvtExoPts}{.}{{{,}}}\ \pts)}%
 				}{}%
 			\IfSubStr{\EnvtExoDeco}{Image}%
 				{%
@@ -2711,6 +2728,814 @@
 				},
 			},
 		}%
+}
+
+%====FLÈCHE ÉVASÉE [FR]
+\usetikzlibrary{arrows,arrows.meta}
+
+\defKV[FlecheEvasee]{%
+	Couleur=\def\FlecheEvaseeCouleur{#1},%
+	TailleFleche=\def\FlecheEvaseeFleche{#1},%
+	Direction=\def\FlecheEvaseeDirectionAngle{#1},%
+	Coeff=\def\FlecheEvaseeCoeff{#1},%
+	TypeFleche=\def\FlecheEvaseeType{#1},%
+	Epaisseur=\def\FlecheEvaseeEpaisseur{#1},%
+	LineCap=\def\FlecheEvaseeLineCap{#1}
+}
+\setKVdefault[FlecheEvasee]{%
+	Couleur=black,%
+	TailleFleche=auto,%
+	Direction={},%
+	Coeff=4,%
+	TypeFleche=Latex,%
+	Deplacement=false,%
+	Epaisseur=0.5mm,%
+	LineCap=butt
+}
+
+\NewDocumentCommand\tkzFlecheEvasee{ O{} m m }{%1=options,2=début,3=fin
+	\restoreKV[FlecheEvasee]%
+	\setKV[FlecheEvasee]{#1}%
+	\begin{scope}[line width=0.05mm]
+		\IfStrEq{\FlecheEvaseeFleche}{auto}%
+			{%
+				\xdef\FlecheEvaseeH{2*\FlecheEvaseeCoeff*\FlecheEvaseeEpaisseur}%
+				\xdef\FlecheEvaseeW{2.1*\FlecheEvaseeCoeff*\FlecheEvaseeEpaisseur}%
+			}%
+			{%
+				\StrCut{\FlecheEvaseeFleche}{/}{\FlecheEvaseeH}{\FlecheEvaseeW}%
+			}%
+		\IfEq{\FlecheEvaseeDirectionAngle}{}%
+			{%
+				\xdef\FlecheEvaseeDirection{}\xdef\FlecheEvaseeAngle{0}%
+			}%
+			{%
+				\StrCut{\FlecheEvaseeDirectionAngle}{/}{\FlecheEvaseeDirection}{\FlecheEvaseeAngle}%
+			}%
+		%coordonnées
+		\coordinate (TMPDEPART) at (#2) ;
+		\ifboolKV[FlecheEvasee]{Deplacement}%
+			{%
+				\coordinate (TMPARRIVEE) at ($(TMPDEPART)+(#3)$) ;
+			}%
+			{%
+				\coordinate (TMPARRIVEE) at (#3) ;
+			}
+		\pgfmathanglebetweenpoints{\pgfpointanchor{TMPDEPART}{center}}{\pgfpointanchor{TMPARRIVEE}{center}}%
+		\edef\tmpangle{\pgfmathresult}%
+		%nœuds
+		\IfEq{\FlecheEvaseeDirection}{right}%
+			{%
+				\coordinate (TMPDG) at ([shift={({90+\tmpangle-\FlecheEvaseeAngle}:{0.5*\FlecheEvaseeEpaisseur})}]TMPDEPART) ;
+				\coordinate (TMPDD) at ([shift={({-90+\tmpangle-\FlecheEvaseeAngle}:{0.5*\FlecheEvaseeEpaisseur})}]TMPDEPART) ;
+				\coordinate (TMPF) at ($(TMPARRIVEE)+({\FlecheEvaseeAngle+\tmpangle+180}:\FlecheEvaseeH)$) ;
+				\coordinate (TMPFG) at ($(TMPARRIVEE)+({\FlecheEvaseeAngle+\tmpangle+180}:\FlecheEvaseeH)+({\FlecheEvaseeAngle+\tmpangle-90}:{0.5*\FlecheEvaseeCoeff*\FlecheEvaseeEpaisseur})$) ;
+				\coordinate (TMPFD) at ($(TMPARRIVEE)+({\FlecheEvaseeAngle+\tmpangle+180}:\FlecheEvaseeH)+({\FlecheEvaseeAngle+\tmpangle+90}:{0.5*\FlecheEvaseeCoeff*\FlecheEvaseeEpaisseur})$) ;
+				\IfStrEq{\FlecheEvaseeType}{Stealth}%
+					{%
+						\draw[\FlecheEvaseeCouleur,->,-{\FlecheEvaseeType[length={1.5*\FlecheEvaseeH},width={1.1*\FlecheEvaseeW}]}] (TMPF)--(TMPARRIVEE) ;
+					}%
+					{%
+						\draw[\FlecheEvaseeCouleur,->,-{\FlecheEvaseeType[length=\FlecheEvaseeH,width=\FlecheEvaseeW]}] (TMPF)--(TMPARRIVEE) ;
+					}%
+				\filldraw[line cap=\FlecheEvaseeLineCap,\FlecheEvaseeCouleur] (TMPDD) to[bend right=\FlecheEvaseeAngle] (TMPFG) -- (TMPFD) to[bend left=\FlecheEvaseeAngle] (TMPDG) --cycle ;
+			}%
+			{}%
+		\IfEq{\FlecheEvaseeDirection}{left}%
+			{%
+				\coordinate (TMPDG) at ([shift={({90+\tmpangle+\FlecheEvaseeAngle}:{0.5*\FlecheEvaseeEpaisseur})}]TMPDEPART) ;
+				\coordinate (TMPDD) at ([shift={({-90+\tmpangle+\FlecheEvaseeAngle}:{0.5*\FlecheEvaseeEpaisseur})}]TMPDEPART) ;
+				\coordinate (TMPF) at ($(TMPARRIVEE)+({180+\tmpangle-\FlecheEvaseeAngle}:\FlecheEvaseeH)$) ;
+				\coordinate (TMPFG) at ($(TMPARRIVEE)+({180+\tmpangle-\FlecheEvaseeAngle}:\FlecheEvaseeH)+({180+\tmpangle-\FlecheEvaseeAngle+90}:{0.5*\FlecheEvaseeCoeff*\FlecheEvaseeEpaisseur})$) ;
+				\coordinate (TMPFD) at ($(TMPARRIVEE)+({180+\tmpangle-\FlecheEvaseeAngle}:\FlecheEvaseeH)+({180+\tmpangle-\FlecheEvaseeAngle-90}:{0.5*\FlecheEvaseeCoeff*\FlecheEvaseeEpaisseur})$) ;
+				\IfStrEq{\FlecheEvaseeType}{Stealth}%
+					{%
+						\draw[\FlecheEvaseeCouleur,->,-{\FlecheEvaseeType[length={1.5*\FlecheEvaseeH},width={1.1*\FlecheEvaseeW}]}] (TMPF)--(TMPARRIVEE) ;
+					}%
+					{%
+						\draw[\FlecheEvaseeCouleur,->,-{\FlecheEvaseeType[length=\FlecheEvaseeH,width=\FlecheEvaseeW]}] (TMPF)--(TMPARRIVEE) ;
+					}%
+				\filldraw[line cap=\FlecheEvaseeLineCap,\FlecheEvaseeCouleur] (TMPDD) to[bend left=\FlecheEvaseeAngle] (TMPFG) -- (TMPFD) to[bend right=\FlecheEvaseeAngle] (TMPDG) --cycle ;
+			}%
+			{}%
+		\IfEq{\FlecheEvaseeDirection}{}%
+			{%
+				\coordinate (TMPF) at ($(TMPARRIVEE)+({180+\tmpangle-\FlecheEvaseeAngle}:\FlecheEvaseeH)$) ;
+				\coordinate (TMPDG) at ([shift={({90+\tmpangle-\FlecheEvaseeAngle}:{0.5*\FlecheEvaseeEpaisseur})}]TMPDEPART) ;
+				\coordinate (TMPFG) at ($(TMPARRIVEE)+({180+\tmpangle-\FlecheEvaseeAngle}:\FlecheEvaseeH)+({-90+\tmpangle-\FlecheEvaseeAngle}:{-0.5*\FlecheEvaseeCoeff*\FlecheEvaseeEpaisseur})$) ;
+				\coordinate (TMPFD) at ($(TMPARRIVEE)+({180+\tmpangle-\FlecheEvaseeAngle}:\FlecheEvaseeH)+({-90+\tmpangle-\FlecheEvaseeAngle}:{0.5*\FlecheEvaseeCoeff*\FlecheEvaseeEpaisseur})$) ;
+				\coordinate (TMPDD) at ([shift={({-90+\tmpangle-\FlecheEvaseeAngle}:{0.5*\FlecheEvaseeEpaisseur})}]TMPDEPART) ;
+				\IfStrEq{\FlecheEvaseeType}{Stealth}%
+					{%
+						\draw[\FlecheEvaseeCouleur,->,-{\FlecheEvaseeType[length={1.5*\FlecheEvaseeH},width={1.1*\FlecheEvaseeW}]}] (TMPF)--(TMPARRIVEE) ;
+					}%
+					{%
+						\draw[\FlecheEvaseeCouleur,->,-{\FlecheEvaseeType[length=\FlecheEvaseeH,width=\FlecheEvaseeW]}] (TMPF)--(TMPARRIVEE) ;
+					}%
+				\filldraw[line cap=\FlecheEvaseeLineCap,\FlecheEvaseeCouleur] (TMPDG) to (TMPFG) -- (TMPFD) to (TMPDD) --cycle ;
+			}%
+			{}%
+	\end{scope}
+}
+
+%====FLÈCHE ÉVASÉE [EN]
+\defKV[flaredarrow]{%
+	color=\def\FlecheEvaseeCouleur{#1},%
+	arrowsize=\def\FlecheEvaseeFleche{#1},%
+	bend=\def\FlecheEvaseeDirectionAngle{#1},%
+	factor=\def\FlecheEvaseeCoeff{#1},%
+	arrowstyle=\def\FlecheEvaseeType{#1},%
+	thickness=\def\FlecheEvaseeEpaisseur{#1},%
+	linecap=\def\FlecheEvaseeLineCap{#1}
+}
+\setKVdefault[flaredarrow]{%
+	color=black,%
+	arrowsize=auto,%
+	bend={},%
+	factor=4,%
+	arrowstyle=Latex,%
+	move=false,%
+	thickness=0.5mm,%
+	linecap=butt
+}
+
+\NewDocumentCommand\tkzFlaredArrow{ O{} m m }{%1=options,2=début,3=fin
+	\restoreKV[flaredarrow]%
+	\setKV[flaredarrow]{#1}%
+	\begin{scope}[line width=0.05mm]
+		\IfStrEq{\FlecheEvaseeFleche}{auto}%
+			{%
+				\xdef\FlecheEvaseeH{2*\FlecheEvaseeCoeff*\FlecheEvaseeEpaisseur}%
+				\xdef\FlecheEvaseeW{2.1*\FlecheEvaseeCoeff*\FlecheEvaseeEpaisseur}%
+			}%
+			{%
+				\StrCut{\FlecheEvaseeFleche}{/}{\FlecheEvaseeH}{\FlecheEvaseeW}%
+			}%
+		\IfEq{\FlecheEvaseeDirectionAngle}{}%
+			{%
+				\xdef\FlecheEvaseeDirection{}\xdef\FlecheEvaseeAngle{0}%
+			}%
+			{%
+				\StrCut{\FlecheEvaseeDirectionAngle}{/}{\FlecheEvaseeDirection}{\FlecheEvaseeAngle}%
+			}%
+		%coordonnées
+		\coordinate (TMPDEPART) at (#2) ;
+		\ifboolKV[flaredarrow]{move}%
+			{%
+				\coordinate (TMPARRIVEE) at ($(TMPDEPART)+(#3)$) ;
+			}%
+			{%
+				\coordinate (TMPARRIVEE) at (#3) ;
+			}
+		\pgfmathanglebetweenpoints{\pgfpointanchor{TMPDEPART}{center}}{\pgfpointanchor{TMPARRIVEE}{center}}%
+		\edef\tmpangle{\pgfmathresult}%
+		%nœuds
+		\IfEq{\FlecheEvaseeDirection}{right}%
+			{%
+				\coordinate (TMPDG) at ([shift={({90+\tmpangle-\FlecheEvaseeAngle}:{0.5*\FlecheEvaseeEpaisseur})}]TMPDEPART) ;
+				\coordinate (TMPDD) at ([shift={({-90+\tmpangle-\FlecheEvaseeAngle}:{0.5*\FlecheEvaseeEpaisseur})}]TMPDEPART) ;
+				\coordinate (TMPF) at ($(TMPARRIVEE)+({\FlecheEvaseeAngle+\tmpangle+180}:\FlecheEvaseeH)$) ;
+				\coordinate (TMPFG) at ($(TMPARRIVEE)+({\FlecheEvaseeAngle+\tmpangle+180}:\FlecheEvaseeH)+({\FlecheEvaseeAngle+\tmpangle-90}:{0.5*\FlecheEvaseeCoeff*\FlecheEvaseeEpaisseur})$) ;
+				\coordinate (TMPFD) at ($(TMPARRIVEE)+({\FlecheEvaseeAngle+\tmpangle+180}:\FlecheEvaseeH)+({\FlecheEvaseeAngle+\tmpangle+90}:{0.5*\FlecheEvaseeCoeff*\FlecheEvaseeEpaisseur})$) ;
+				\IfStrEq{\FlecheEvaseeType}{Stealth}%
+					{%
+						\draw[\FlecheEvaseeCouleur,->,-{\FlecheEvaseeType[length={1.5*\FlecheEvaseeH},width={1.1*\FlecheEvaseeW}]}] (TMPF)--(TMPARRIVEE) ;
+					}%
+					{%
+						\draw[\FlecheEvaseeCouleur,->,-{\FlecheEvaseeType[length=\FlecheEvaseeH,width=\FlecheEvaseeW]}] (TMPF)--(TMPARRIVEE) ;
+					}%
+				\filldraw[line cap=\FlecheEvaseeLineCap,\FlecheEvaseeCouleur] (TMPDD) to[bend right=\FlecheEvaseeAngle] (TMPFG) -- (TMPFD) to[bend left=\FlecheEvaseeAngle] (TMPDG) --cycle ;
+			}%
+			{}%
+		\IfEq{\FlecheEvaseeDirection}{left}%
+			{%
+				\coordinate (TMPDG) at ([shift={({90+\tmpangle+\FlecheEvaseeAngle}:{0.5*\FlecheEvaseeEpaisseur})}]TMPDEPART) ;
+				\coordinate (TMPDD) at ([shift={({-90+\tmpangle+\FlecheEvaseeAngle}:{0.5*\FlecheEvaseeEpaisseur})}]TMPDEPART) ;
+				\coordinate (TMPF) at ($(TMPARRIVEE)+({180+\tmpangle-\FlecheEvaseeAngle}:\FlecheEvaseeH)$) ;
+				\coordinate (TMPFG) at ($(TMPARRIVEE)+({180+\tmpangle-\FlecheEvaseeAngle}:\FlecheEvaseeH)+({180+\tmpangle-\FlecheEvaseeAngle+90}:{0.5*\FlecheEvaseeCoeff*\FlecheEvaseeEpaisseur})$) ;
+				\coordinate (TMPFD) at ($(TMPARRIVEE)+({180+\tmpangle-\FlecheEvaseeAngle}:\FlecheEvaseeH)+({180+\tmpangle-\FlecheEvaseeAngle-90}:{0.5*\FlecheEvaseeCoeff*\FlecheEvaseeEpaisseur})$) ;
+				\IfStrEq{\FlecheEvaseeType}{Stealth}%
+					{%
+						\draw[\FlecheEvaseeCouleur,->,-{\FlecheEvaseeType[length={1.5*\FlecheEvaseeH},width={1.1*\FlecheEvaseeW}]}] (TMPF)--(TMPARRIVEE) ;
+					}%
+					{%
+						\draw[\FlecheEvaseeCouleur,->,-{\FlecheEvaseeType[length=\FlecheEvaseeH,width=\FlecheEvaseeW]}] (TMPF)--(TMPARRIVEE) ;
+					}%
+				\filldraw[line cap=\FlecheEvaseeLineCap,\FlecheEvaseeCouleur] (TMPDD) to[bend left=\FlecheEvaseeAngle] (TMPFG) -- (TMPFD) to[bend right=\FlecheEvaseeAngle] (TMPDG) --cycle ;
+			}%
+			{}%
+		\IfEq{\FlecheEvaseeDirection}{}%
+			{%
+				\coordinate (TMPF) at ($(TMPARRIVEE)+({180+\tmpangle-\FlecheEvaseeAngle}:\FlecheEvaseeH)$) ;
+				\coordinate (TMPDG) at ([shift={({90+\tmpangle-\FlecheEvaseeAngle}:{0.5*\FlecheEvaseeEpaisseur})}]TMPDEPART) ;
+				\coordinate (TMPFG) at ($(TMPARRIVEE)+({180+\tmpangle-\FlecheEvaseeAngle}:\FlecheEvaseeH)+({-90+\tmpangle-\FlecheEvaseeAngle}:{-0.5*\FlecheEvaseeCoeff*\FlecheEvaseeEpaisseur})$) ;
+				\coordinate (TMPFD) at ($(TMPARRIVEE)+({180+\tmpangle-\FlecheEvaseeAngle}:\FlecheEvaseeH)+({-90+\tmpangle-\FlecheEvaseeAngle}:{0.5*\FlecheEvaseeCoeff*\FlecheEvaseeEpaisseur})$) ;
+				\coordinate (TMPDD) at ([shift={({-90+\tmpangle-\FlecheEvaseeAngle}:{0.5*\FlecheEvaseeEpaisseur})}]TMPDEPART) ;
+				\IfStrEq{\FlecheEvaseeType}{Stealth}%
+					{%
+						\draw[\FlecheEvaseeCouleur,->,-{\FlecheEvaseeType[length={1.5*\FlecheEvaseeH},width={1.1*\FlecheEvaseeW}]}] (TMPF)--(TMPARRIVEE) ;
+					}%
+					{%
+						\draw[\FlecheEvaseeCouleur,->,-{\FlecheEvaseeType[length=\FlecheEvaseeH,width=\FlecheEvaseeW]}] (TMPF)--(TMPARRIVEE) ;
+					}%
+				\filldraw[line cap=\FlecheEvaseeLineCap,\FlecheEvaseeCouleur] (TMPDG) to (TMPFG) -- (TMPFD) to (TMPDD) --cycle ;
+			}%
+			{}%
+	\end{scope}
+}
+
+%====PANO AUTOROUTE
+\newlength{\PanoTorouteStretch}
+\newlength{\PanoTorouteOffsetArrow}
+
+\defKV[PanoAutoroute]{%
+	Fleches=\def\PanoTorouteArrow{#1},%
+	CouleurFond=\def\PanoTorouteCoul{#1},%
+	CouleurTitre=\def\PanoTorouteCoulTitre{#1},%
+	Police=\def\PanoTorouteFonte{#1},%
+	PoliceCartouche=\def\PanoTorouteFonteTitre{#1},%
+	TypeFleche=\def\PanoTorouteStyleArrow{#1},%
+	EspacementV=\setlength{\PanoTorouteStretch}{#1},%
+	OffsetFleches=\setlength{\PanoTorouteOffsetArrow}{#1}
+}
+
+\setKVdefault[PanoAutoroute]{%
+	Fleches=0,%
+	CouleurFond=blue,%
+	CouleurTitre=red,%
+	Largeur=10cm,%
+	Police=\LARGE\bfseries\sffamily,%
+	PoliceCartouche=\Large\bfseries\sffamily,%
+	TypeFleche={\scalebox{1.33}[1.25]{\faArrowDown}},%
+	EspacementV={2.5mm},%
+	OffsetFleches={5mm},%
+	Dernier=true
+}
+
+\NewDocumentEnvironment{PanneauAutoroute}{ O{} D<>{} m }%
+{%
+	\restoreKV[PanoAutoroute]%
+	\setKV[PanoAutoroute]{#1}
+	\IfEq{#3}{}%
+		{%
+			\tcolorbox[enhanced,width={\useKV[PanoAutoroute]{Largeur}},fontupper=\PanoTorouteFonte,colback=\PanoTorouteCoul,colframe=\PanoTorouteCoul!5!white,coltext=white,sharp corners,boxsep=1mm,left=1mm,right=1mm,top=1mm,bottom=1mm,#2]
+		}%
+		{%
+			\tcolorbox[enhanced,width={\useKV[PanoAutoroute]{Largeur}},fontupper=\PanoTorouteFonte,colback=\PanoTorouteCoul,colframe=\PanoTorouteCoul!5!white,coltext=white,sharp corners,boxsep=1mm,left=1mm,right=1mm,top=1mm,bottom=1mm,attach boxed title to top center,fonttitle=\PanoTorouteFonteTitre,coltitle=white,boxed title style={colback=\PanoTorouteCoulTitre,size=small,sharp corners,left=0mm,right=0mm,colframe=\PanoTorouteCoulTitre!5!white},title={#3},#2]
+		}%
+	\baselineskip=-1000pt\lineskip=\PanoTorouteStretch\lineskiplimit=\maxdimen%
+}%
+{%
+	\ifnum\PanoTorouteArrow>0
+		
+		\medskip
+		\hspace*{\PanoTorouteOffsetArrow}\foreach \i in {1,...,\PanoTorouteArrow}{\hfill\PanoTorouteStyleArrow}\hfill\hspace*{\PanoTorouteOffsetArrow}
+	\fi%
+	\endtcolorbox%
+	%
+	\ifboolKV[PanoAutoroute]{Dernier}{}{\vspace*{\dimexpr-\baselineskip-0.5mm\relax}}%
+}
+
+\NewDocumentCommand\VilleDist{ s m m }{%
+	\IfBooleanTF{#1}%
+		{%
+			#2\hfill~#3
+		}%
+		{%
+			#2\hfill~#3\\
+		}%
+}
+
+%====PANOSOLDES
+\newlength{\tmphautbannsold}
+\newlength{\tmphautbannsoldextra}
+\newlength{\tmplargbannsold}
+\newlength{\tmplargasold}
+\newlength{\tmplargbsold}
+\newlength{\tmplargtotsold}
+\newlength{\tmpoffsetbannsold}
+\newlength{\tmphautlignesol}
+\newlength{\tmphautsoles}
+
+\def\labelancienprix{Ancien Prix~:~}
+\def\labelnouveauprix{Nouveau Prix~:~}
+\def\labelreduction{SOLDES~:~}
+
+\defKV[PanoSoldes]{%
+	Couleur=\def\panosoldescolor{#1},%
+	Largeur=\def\panosoldeswidth{#1},%
+	PoliceEntete=\def\panosoldesfonthaut{#1},%
+	PolicePrix=\def\panosoldesfontprix{#1},%
+	PoliceReduc=\def\panosoldesfontreduc{#1},%
+	OffsetReduc=\setlength{\tmpoffsetbannsold}{#1},%
+	Titre=\def\panosoldestitre{#1},%
+	AgrandirReduc=\setlength{\tmphautbannsoldextra}{#1}
+}
+
+\setKVdefault[PanoSoldes]{%
+	Couleur=gray,
+	Largeur=auto,
+	PoliceEntete=\large\bfseries,%
+	PolicePrix=\footnotesize,%
+	PoliceReduc=\large\bfseries,%
+	Titre=GRANDE DÉMARQUE,%
+	OffsetReduc=1.25cm,%
+	AgrandirReduc=0mm
+}
+
+\NewDocumentCommand\AfficheSoldes{ O{} m m m }{%
+	\restoreKV[PanoSoldes]%
+	\setKV[PanoSoldes]{#1}%
+	%calcul de la largeur
+	\IfEq{\panosoldeswidth}{auto}%
+		{%
+			\settowidth{\tmplargbannsold}{{\panosoldesfontreduc\labelreduction-999X}}%largeur avec un peu de marge dûe à la rotation
+			\settowidth{\tmplargasold}{{\panosoldesfontprix\labelancienprix99999X}}%largeur avec un peu de marge dûe au prix "élastique"
+			\settowidth{\tmplargbsold}{{\panosoldesfontprix\labelnouveauprix99999X}}%largeur avec un peu de marge dûe au prix "élastique"
+			\pgfmathsetlength{\tmplargtotsold}{max(\tmplargbannsold,\tmplargasold,\tmplargbsold)+1mm}%on rajoute encore un peu de marge pour être sûr
+		}%
+		{%
+			\setlength{\tmplargtotsold}{\panosoldeswidth}%
+		}%
+	%calcul de la hauteur
+	\settototalheight{\tmphautlignesol}{\panosoldesfontprix\labelancienprix\labelnouveauprix0,123456789X}%
+	\settototalheight{\tmphautbannsold}{\panosoldesfontreduc\labelreduction-0,123456789X}%
+	\addtolength{\tmphautbannsold}{6mm+\tmphautbannsoldextra}%
+	\setlength{\tmphautsoles}{2\tmphautlignesol}%
+	\addtolength{\tmphautsoles}{\tmpoffsetbannsold+2mm}%
+	\addtolength{\tmphautsoles}{\tmphautbannsold}%
+	%boîte
+	\tcolorbox[%
+		enhanced,nobeforeafter,width=\tmplargtotsold,text height=\tmphautsoles,boxrule=0.5mm,boxsep=0.5mm,title={\panosoldestitre},halign title=flush center,colframe=\panosoldescolor,colback=white,top=1.25mm,bottom=1.25mm,left=1.25mm,right=1.25mm,fonttitle=\panosoldesfonthaut,%
+		overlay={%
+			\begin{tcbclipframe}
+				\draw ([shift={(1.25mm,-2mm)}]interior.north west) node[anchor=north west,font=\panosoldesfontprix,inner sep=0pt] {Ancien prix : {#2}} ;
+				\draw ([shift={(-1.25mm,2.5mm)}]interior.south east) node[anchor=south east,left,font=\panosoldesfontprix,inner sep=0pt] {Nouveau prix : {#3}} ;
+				%bannière (cf Séb Lozano)
+				\fill[line cap=rect,\panosoldescolor] ([shift={(0,2.5mm+\tmphautlignesol)}]interior.south west)--([shift={(0,2.5mm+\tmphautlignesol+\tmpoffsetbannsold)}]interior.south east)--++(0,\tmphautbannsold)--([shift={(0,2.5mm+\tmphautlignesol+\tmphautbannsold)}]interior.south west) ;
+				%petit filet
+				\draw[white,semithick] ([shift={(0,2.5mm+\tmphautlignesol+1pt)}]interior.south west)--([shift={(0,2.5mm+\tmphautlignesol+\tmpoffsetbannsold+1pt)}]interior.south east)--++(0,\tmphautbannsold-2pt)--([shift={(0,2.5mm+\tmphautlignesol+\tmphautbannsold-1pt)}]interior.south west)--cycle ;
+				%label
+				\draw[draw=none] ([shift={(0,2.5mm+\tmphautlignesol+0.5\tmphautbannsold)}]interior.south west) -- ([shift={(0,2.5mm+\tmphautlignesol+\tmpoffsetbannsold+0.5\tmphautbannsold)}]interior.south east) node[midway,sloped,font=\panosoldesfontreduc,text=white] {SOLDES : {#4}} ;
+			\end{tcbclipframe}%
+			}%
+		]%
+	\endtcolorbox%
+}
+
+%====tcbmarker
+\defKV[tcbmarker]{%
+	Couleur=\def\tcbmarkercolor{#1},%
+	color=\def\tcbmarkercolor{#1},%
+	Police=\def\tcbmarkerfonte{#1},%
+	font=\def\tcbmarkerfonte{#1},%
+	Largeur=\def\tcbmarkerlarg{#1},%
+	width=\def\tcbmarkerlarg{#1}
+}
+\setKVdefault[tcbmarker]{%
+	Couleur=yellow,%
+	color=yellow,%
+	Police=\small\sffamily,%
+	font=\small\sffamily,%
+	Largeur=auto,%
+	width=auto
+}
+
+\NewDocumentCommand\tbcmarker{ O{} D<>{} m }{%
+	\restoreKV[tcbmarker]%
+	\setKV[tcbmarker]{#1}%
+	\IfEq{\tcbmarkerlarg}{auto}%
+		{%
+			\tcbset{tcbmarkerbase/.style={enhanced,box align=base}}
+		}%
+		{%
+			\tcbset{tcbmarkerbase/.style={enhanced,capture=minipage,width=\tcbmarkerlarg}}
+		}%
+	\tcbox[tcbmarkerbase,nobeforeafter,fontupper=\tcbmarkerfonte,%
+	boxrule=0.5pt,boxsep=0.5mm,left=2mm,right=5mm,top=0pt,bottom=0pt,colback=\tcbmarkercolor!15,colframe=\tcbmarkercolor!20!black,sharp corners,rounded corners=southeast,arc is angular,arc=3mm,%
+	underlay={\path[line width=0.5pt,fill=tcbcolback!80!black] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);\path[line width=0.5pt,draw=tcbcolframe,shorten <=-0.05mm,shorten >=-0.05mm] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);},drop fuzzy shadow,#2,before upper={\vphantom{(qÉ)}},#2]{#3}%
+}
+
+%====SkillsWheel [en & fr]
+\usetikzlibrary{bbox}
+\newlength{\skilwheelradius}
+\setlength\skilwheelradius{4cm}
+
+\defKV[skillswheel]{%
+	Rayon=\setlength\skilwheelradius{#1},%
+	Radius=\setlength\skilwheelradius{#1},%
+	Police=\def\skilwheelfonte{#1},%
+	Font=\def\skilwheelfonte{#1},%
+	ListeNiveaux=\def\skilwheelskills{#1},%
+	SkillsList=\def\skilwheelskills{#1},%
+	Marqueur=\def\skilwheelmark{#1},%
+	Mark=\def\skilwheelmark{#1}
+}
+\setKVdefault[skillswheel]{%
+	Rayon=3cm,Radius=3cm,
+	Police=\bfseries\sffamily,Font=\bfseries\sffamily,%
+	ListeNiveaux={},SkillsList={},%
+	Marqueur={},Mark={}
+}
+
+\NewDocumentCommand\RoueNiveaux{ O{} D<>{} m }{%
+	%1 := clés
+	%2 := liste couleurs
+	%3 := choix marqueur
+	\restoreKV[skillswheel]%
+	\setKV[skillswheel]{#1}%
+	%\IfEq{#3}{}{\xdef\skilwheelmark{-1}}{\xdef\skilwheelmark{#3}}%
+	\IfSubStr{#3}{,}%
+		{%
+			\readlist*\skilswheelcolors{#3}%
+		}%
+		{%
+			\xdef\skilswheelcolorslen{#3}%
+		}%
+	\IfEq{\skilwheelmark}{}%
+		{}%
+		{%
+			\xintifboolexpr{\skilwheelmark >= 0 'and' \skilwheelmark <= \skilswheelcolorslen}%
+				{%
+					\xdef\skilswheelposcurs{\xintfloateval{180-180*(\skilwheelmark)/\skilswheelcolorslen}}%
+				}%
+				{%
+					\xdef\skilswheelposcurs{\xintfloateval{0.5*\skilswheelcolorslen}}%
+				}%
+		}%
+	\IfEq{\skilwheelskills}{}{}{\readlist*\skilswheellstskills{\skilwheelskills}}%
+	\begin{tikzpicture}[transform shape,#2]
+		\foreach \i in {1,...,\skilswheelcolorslen}{%
+			\IfSubStr{#3}{,}%
+				{%
+					\draw[line join=mitter,line cap=rect,line width=\fpeval{0.015\skilwheelradius},fill={\skilswheelcolors[\i]}] ({180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) -- ({180-180*(\i-1)/\skilswheelcolorslen}:\skilwheelradius) arc({180-180*(\i-1)/\skilswheelcolorslen}:{180-180*(\i)/\skilswheelcolorslen}:\skilwheelradius) -- ({180-180*(\i)/\skilswheelcolorslen}:{0.075\skilwheelradius}) arc({180-180*(\i)/\skilswheelcolorslen}:{180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) ;
+				}%
+				{%
+					\draw[line join=mitter,line cap=rect,line width=\fpeval{0.015\skilwheelradius}] ({180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) -- ({180-180*(\i-1)/\skilswheelcolorslen}:\skilwheelradius) arc({180-180*(\i-1)/\skilswheelcolorslen}:{180-180*(\i)/\skilswheelcolorslen}:\skilwheelradius) -- ({180-180*(\i)/\skilswheelcolorslen}:{0.075\skilwheelradius}) arc({180-180*(\i)/\skilswheelcolorslen}:{180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) ;
+				}%
+			%label
+			\IfEq{\skilwheelskills}{}%
+				{}%
+				{%
+					\xintifboolexpr{ 180*(\i-1)/\skilswheelcolorslen <= 90}%
+						{%
+							\draw[draw=none] ({180-180*(\i-1)/\skilswheelcolorslen}:\skilwheelradius) -- ({180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) node[inner sep=1.5pt,sloped,pos=0.033,above right,font=\skilwheelfonte] {\vphantom{()}\skilswheellstskills[\i]} ;
+						}%
+						{%
+							\draw[draw=none] ({180-180*(\i)/\skilswheelcolorslen}:\skilwheelradius) -- ({180-180*(\i)/\skilswheelcolorslen}:{0.075\skilwheelradius}) node[inner sep=1.5pt,sloped,pos=0.033,above left,font=\skilwheelfonte] {\vphantom{()}\skilswheellstskills[\i]} ;
+						}%
+				}%
+		}%
+		\IfEq{\skilwheelmark}{}%
+			{}%
+			{%
+				\node[rotate={90+\skilswheelposcurs},regular polygon,regular polygon sides=3,fill=black,inner sep=0pt,minimum size={0.125*\skilwheelradius},outer sep=0pt] at (\skilswheelposcurs:{1.0125\skilwheelradius}) {} ;
+			}%
+	\end{tikzpicture}%
+}
+
+\NewDocumentCommand\WheelOfSkills{ O{} D<>{} m }{%
+	%1 := clés
+	%2 := liste couleurs
+	%3 := choix marqueur
+	\restoreKV[skillswheel]%
+	\setKV[skillswheel]{#1}%
+	%\IfEq{#3}{}{\xdef\skilwheelmark{-1}}{\xdef\skilwheelmark{#3}}%
+	\IfSubStr{#3}{,}%
+		{%
+			\readlist*\skilswheelcolors{#3}%
+		}%
+		{%
+			\xdef\skilswheelcolorslen{#3}%
+		}%
+	\IfEq{\skilwheelmark}{}%
+		{}%
+		{%
+			\xintifboolexpr{\skilwheelmark >= 0 'and' \skilwheelmark <= \skilswheelcolorslen}%
+				{%
+					\xdef\skilswheelposcurs{\xintfloateval{180-180*(\skilwheelmark)/\skilswheelcolorslen}}%
+				}%
+				{%
+					\xdef\skilswheelposcurs{\xintfloateval{0.5*\skilswheelcolorslen}}%
+				}%
+		}%
+	\IfEq{\skilwheelskills}{}{}{\readlist*\skilswheellstskills{\skilwheelskills}}%
+	\begin{tikzpicture}[transform shape,#2]
+		\foreach \i in {1,...,\skilswheelcolorslen}{%
+			\IfSubStr{#3}{,}%
+				{%
+					\draw[line join=mitter,line cap=rect,line width=\fpeval{0.015\skilwheelradius},fill={\skilswheelcolors[\i]}] ({180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) -- ({180-180*(\i-1)/\skilswheelcolorslen}:\skilwheelradius) arc({180-180*(\i-1)/\skilswheelcolorslen}:{180-180*(\i)/\skilswheelcolorslen}:\skilwheelradius) -- ({180-180*(\i)/\skilswheelcolorslen}:{0.075\skilwheelradius}) arc({180-180*(\i)/\skilswheelcolorslen}:{180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) ;
+				}%
+				{%
+					\draw[line join=mitter,line cap=rect,line width=\fpeval{0.015\skilwheelradius}] ({180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) -- ({180-180*(\i-1)/\skilswheelcolorslen}:\skilwheelradius) arc({180-180*(\i-1)/\skilswheelcolorslen}:{180-180*(\i)/\skilswheelcolorslen}:\skilwheelradius) -- ({180-180*(\i)/\skilswheelcolorslen}:{0.075\skilwheelradius}) arc({180-180*(\i)/\skilswheelcolorslen}:{180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) ;
+				}%
+			%label
+			\IfEq{\skilwheelskills}{}%
+				{}%
+				{%
+					\xintifboolexpr{ 180*(\i-1)/\skilswheelcolorslen <= 90}%
+						{%
+							\draw[draw=none] ({180-180*(\i-1)/\skilswheelcolorslen}:\skilwheelradius) -- ({180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) node[inner sep=1.5pt,sloped,pos=0.033,above right,font=\skilwheelfonte] {\vphantom{()}\skilswheellstskills[\i]} ;
+						}%
+						{%
+							\draw[draw=none] ({180-180*(\i)/\skilswheelcolorslen}:\skilwheelradius) -- ({180-180*(\i)/\skilswheelcolorslen}:{0.075\skilwheelradius}) node[inner sep=1.5pt,sloped,pos=0.033,above left,font=\skilwheelfonte] {\vphantom{()}\skilswheellstskills[\i]} ;
+						}%
+				}%
+		}%
+		\IfEq{\skilwheelmark}{}%
+			{}%
+			{%
+				\node[rotate={90+\skilswheelposcurs},regular polygon,regular polygon sides=3,fill=black,inner sep=0pt,minimum size={0.125*\skilwheelradius},outer sep=0pt] at (\skilswheelposcurs:{1.0125\skilwheelradius}) {} ;
+			}%
+	\end{tikzpicture}%
+}
+
+\defKV[skillswheellevel]{%
+	Pos=\def\skilswheelposlab{#1},%
+	Echelle=\def\skilswheelscalelab{#1},%
+	Scale=\def\skilswheelscalelab{#1},%
+}
+\setKVdefault[skillswheellevel]{%
+	Pos=0.80,%
+	Echelle=2,Scale=2
+}
+
+\NewDocumentCommand\PlacerIconeNiveau{ O{} m m }{%
+	\restoreKV[skillswheellevel]%
+	\setKV[skillswheellevel]{#1}%
+	\node[rotate={90-(180*(#2-0.5)/\skilswheelcolorslen)},inner sep=0pt,outer sep=0pt,scale=\skilswheelscalelab] at ({180-180*(#2-0.5)/\skilswheelcolorslen}:{\skilswheelposlab\skilwheelradius}) {#3} ;
+}
+
+\NewDocumentCommand\PutIconSkill{ O{} m m }{%
+	\restoreKV[skillswheellevel]%
+	\setKV[skillswheellevel]{#1}%
+	\node[rotate={90-(180*(#2-0.5)/\skilswheelcolorslen)},inner sep=0pt,outer sep=0pt,scale=\skilswheelscalelab] at ({180-180*(#2-0.5)/\skilswheelcolorslen}:{\skilswheelposlab\skilwheelradius}) {#3} ;
+}
+
+\NewDocumentCommand\PlacerIconesNiveaux{ O{} m }{%
+	\restoreKV[skillswheellevel]%
+	\setKV[skillswheellevel]{#1}%
+	\readlist*\skllsticon{#2}%
+	\foreach \i in {1,...,\skllsticonlen}{%
+		\node[rotate={90-(180*(\i-0.5)/\skilswheelcolorslen)},inner sep=0pt,outer sep=0pt,scale=\skilswheelscalelab] at ({180-180*(\i-0.5)/\skilswheelcolorslen}:{\skilswheelposlab\skilwheelradius}) {\skllsticon[\i]} ;
+	}
+}
+
+\NewDocumentCommand\PutIconsSkills{ O{} m }{%
+	\restoreKV[skillswheellevel]%
+	\setKV[skillswheellevel]{#1}%
+	\readlist*\skllsticon{#2}%
+	\foreach \i in {1,...,\skllsticonlen}{%
+		\node[rotate={90-(180*(\i-0.5)/\skilswheelcolorslen)},inner sep=0pt,outer sep=0pt,scale=\skilswheelscalelab] at ({180-180*(\i-0.5)/\skilswheelcolorslen}:{\skilswheelposlab\skilwheelradius}) {\skllsticon[\i]} ;
+	}
+}
+
+\NewDocumentEnvironment{EnvRoueNiveaux}{ O{} D<>{} m }%
+{%
+	%1 := clés
+	%2 := liste couleurs
+	%3 := choix marqueur
+	\restoreKV[skillswheel]%
+	\setKV[skillswheel]{#1}%
+	%\IfEq{#3}{}{\xdef\skilwheelmark{-1}}{\xdef\skilwheelmark{#3}}%
+	\IfSubStr{#3}{,}%
+	{%
+		\readlist*\skilswheelcolors{#3}%
+	}%
+	{%
+		\xdef\skilswheelcolorslen{#3}%
+	}%
+	\IfEq{\skilwheelmark}{}%
+	{}%
+	{%
+		\xintifboolexpr{\skilwheelmark >= 0 'and' \skilwheelmark <= \skilswheelcolorslen}%
+		{%
+			\xdef\skilswheelposcurs{\xintfloateval{180-180*(\skilwheelmark)/\skilswheelcolorslen}}%
+		}%
+		{%
+			\xdef\skilswheelposcurs{\xintfloateval{0.5*\skilswheelcolorslen}}%
+		}%
+	}%
+	\IfEq{\skilwheelskills}{}{}{\readlist*\skilswheellstskills{\skilwheelskills}}%
+	\begin{tikzpicture}[transform shape,#2]
+		\foreach \i in {1,...,\skilswheelcolorslen}{%
+			\IfSubStr{#3}{,}%
+			{%
+				\draw[line join=mitter,line cap=rect,line width=\fpeval{0.015\skilwheelradius},fill={\skilswheelcolors[\i]}] ({180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) -- ({180-180*(\i-1)/\skilswheelcolorslen}:\skilwheelradius) arc({180-180*(\i-1)/\skilswheelcolorslen}:{180-180*(\i)/\skilswheelcolorslen}:\skilwheelradius) -- ({180-180*(\i)/\skilswheelcolorslen}:{0.075\skilwheelradius}) arc({180-180*(\i)/\skilswheelcolorslen}:{180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) ;
+			}%
+			{%
+				\draw[line join=mitter,line cap=rect,line width=\fpeval{0.015\skilwheelradius}] ({180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) -- ({180-180*(\i-1)/\skilswheelcolorslen}:\skilwheelradius) arc({180-180*(\i-1)/\skilswheelcolorslen}:{180-180*(\i)/\skilswheelcolorslen}:\skilwheelradius) -- ({180-180*(\i)/\skilswheelcolorslen}:{0.075\skilwheelradius}) arc({180-180*(\i)/\skilswheelcolorslen}:{180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) ;
+			}%
+			%label
+			\IfEq{\skilwheelskills}{}%
+			{}%
+			{%
+				\xintifboolexpr{ 180*(\i-1)/\skilswheelcolorslen <= 90}%
+				{%
+					\draw[draw=none] ({180-180*(\i-1)/\skilswheelcolorslen}:\skilwheelradius) -- ({180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) node[inner sep=1.5pt,sloped,pos=0.033,above right,font=\skilwheelfonte] {\vphantom{()}\skilswheellstskills[\i]} ;
+				}%
+				{%
+					\draw[draw=none] ({180-180*(\i)/\skilswheelcolorslen}:\skilwheelradius) -- ({180-180*(\i)/\skilswheelcolorslen}:{0.075\skilwheelradius}) node[inner sep=1.5pt,sloped,pos=0.033,above left,font=\skilwheelfonte] {\vphantom{()}\skilswheellstskills[\i]} ;
+				}%
+			}%
+		}%
+		\IfEq{\skilwheelmark}{}%
+		{}%
+		{%
+			\node[rotate={90+\skilswheelposcurs},regular polygon,regular polygon sides=3,fill=black,inner sep=0pt,minimum size={0.125*\skilwheelradius},outer sep=0pt] at (\skilswheelposcurs:{1.0125\skilwheelradius}) {} ;
+		}%
+}%
+{%
+	\end{tikzpicture}%
+}
+
+\NewDocumentEnvironment{SkillsWheel}{ O{} D<>{} m }%
+{%
+	%1 := clés
+	%2 := liste couleurs
+	%3 := choix marqueur
+	\restoreKV[skillswheel]%
+	\setKV[skillswheel]{#1}%
+	%\IfEq{#3}{}{\xdef\skilwheelmark{-1}}{\xdef\skilwheelmark{#3}}%
+	\IfSubStr{#3}{,}%
+	{%
+		\readlist*\skilswheelcolors{#3}%
+	}%
+	{%
+		\xdef\skilswheelcolorslen{#3}%
+	}%
+	\IfEq{\skilwheelmark}{}%
+	{}%
+	{%
+		\xintifboolexpr{\skilwheelmark >= 0 'and' \skilwheelmark <= \skilswheelcolorslen}%
+		{%
+			\xdef\skilswheelposcurs{\xintfloateval{180-180*(\skilwheelmark)/\skilswheelcolorslen}}%
+		}%
+		{%
+			\xdef\skilswheelposcurs{\xintfloateval{0.5*\skilswheelcolorslen}}%
+		}%
+	}%
+	\IfEq{\skilwheelskills}{}{}{\readlist*\skilswheellstskills{\skilwheelskills}}%
+	\begin{tikzpicture}[transform shape,#2]
+		\foreach \i in {1,...,\skilswheelcolorslen}{%
+			\IfSubStr{#3}{,}%
+			{%
+				\draw[line join=mitter,line cap=rect,line width=\fpeval{0.015\skilwheelradius},fill={\skilswheelcolors[\i]}] ({180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) -- ({180-180*(\i-1)/\skilswheelcolorslen}:\skilwheelradius) arc({180-180*(\i-1)/\skilswheelcolorslen}:{180-180*(\i)/\skilswheelcolorslen}:\skilwheelradius) -- ({180-180*(\i)/\skilswheelcolorslen}:{0.075\skilwheelradius}) arc({180-180*(\i)/\skilswheelcolorslen}:{180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) ;
+			}%
+			{%
+				\draw[line join=mitter,line cap=rect,line width=\fpeval{0.015\skilwheelradius}] ({180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) -- ({180-180*(\i-1)/\skilswheelcolorslen}:\skilwheelradius) arc({180-180*(\i-1)/\skilswheelcolorslen}:{180-180*(\i)/\skilswheelcolorslen}:\skilwheelradius) -- ({180-180*(\i)/\skilswheelcolorslen}:{0.075\skilwheelradius}) arc({180-180*(\i)/\skilswheelcolorslen}:{180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) ;
+			}%
+			%label
+			\IfEq{\skilwheelskills}{}%
+			{}%
+			{%
+				\xintifboolexpr{ 180*(\i-1)/\skilswheelcolorslen <= 90}%
+				{%
+					\draw[draw=none] ({180-180*(\i-1)/\skilswheelcolorslen}:\skilwheelradius) -- ({180-180*(\i-1)/\skilswheelcolorslen}:{0.075\skilwheelradius}) node[inner sep=1.5pt,sloped,pos=0.033,above right,font=\skilwheelfonte] {\vphantom{()}\skilswheellstskills[\i]} ;
+				}%
+				{%
+					\draw[draw=none] ({180-180*(\i)/\skilswheelcolorslen}:\skilwheelradius) -- ({180-180*(\i)/\skilswheelcolorslen}:{0.075\skilwheelradius}) node[inner sep=1.5pt,sloped,pos=0.033,above left,font=\skilwheelfonte] {\vphantom{()}\skilswheellstskills[\i]} ;
+				}%
+			}%
+		}%
+		\IfEq{\skilwheelmark}{}%
+		{}%
+		{%
+			\node[rotate={90+\skilswheelposcurs},regular polygon,regular polygon sides=3,fill=black,inner sep=0pt,minimum size={0.125*\skilwheelradius},outer sep=0pt] at (\skilswheelposcurs:{1.0125\skilwheelradius}) {} ;
+		}%
+}%
+{%
+	\end{tikzpicture}%
+}
+
+\newlength{\tmphauteurgradniv}
+\newlength{\tmphauteurspeedom}
+
+\defKV[miniskillswheel]{%
+	Couleurs=\def\miniskillswheelcol{#1},%
+	Colors=\def\miniskillswheelcol{#1},%
+	Marqueur=\def\miniskillswheelmark{#1},%
+	Mark=\def\miniskillswheelmark{#1},%
+	Taille=\setlength{\tmphauteurspeedom}{#1},%
+	Size=\setlength{\tmphauteurspeedom}{#1}
+}
+\setKVdefault[miniskillswheel]{%
+	Couleurs=black,%
+	Colors=black,
+	Marqueur={},%
+	Mark={},
+	Taille=4cm,%
+	Size=4cm
+}
+
+\NewDocumentCommand\MiniCompteurNiveaux{ O{} D<>{} m }{%
+	\restoreKV[miniskillswheel]%
+	\setKV[miniskillswheel]{#1}%
+	\settototalheight{\tmphauteurgradniv}{\hbox{azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN}}%
+	\setlength{\tmphauteurgradniv}{0.90\tmphauteurgradniv}%.
+	\IfEq{\miniskillswheelmark}{}%
+		{}%
+		{%
+			\xintifboolexpr{\miniskillswheelmark >= 0 'and' \miniskillswheelmark <= #3}%
+				{%
+					\xdef\miniskilswheelposcurs{\xintfloateval{180-180*(\miniskillswheelmark)/(#3)}}%
+				}%
+				{%
+					\xdef\miniskilswheelposcurs{\xintfloateval{0.5*(#3)}}%
+				}%
+		}%
+	\IfSubStr{\miniskillswheelcol}{/}%
+		{%
+			\StrCut{\miniskillswheelcol}{/}{\miniskillswheelcolp}{\miniskillswheelcols}%
+		}%
+		{%
+			\xdef\miniskillswheelcolp{\miniskillswheelcol}\xdef\miniskillswheelcols{\miniskillswheelcol}%
+		}%
+	\begin{tikzpicture}[bezier bounding box,baseline={-0.075\tmphauteurgradniv},line width={0.075\tmphauteurgradniv},#2,transform shape]
+		\draw[\miniskillswheelcolp] (-15:{0.7588\tmphauteurgradniv}) arc(-15:195:{0.7588\tmphauteurgradniv}) --cycle ;
+		\foreach \i in {0,...,#3}{%
+			\draw[\miniskillswheelcolp,line cap=round] ({180-180*(\i)/#3}:{0.55\tmphauteurgradniv})--({180-180*(\i)/#3}:{0.65\tmphauteurgradniv}) ;
+		}
+		\IfEq{\miniskillswheelmark}{}%
+			{}%
+			{%
+				\draw[\miniskillswheelcols] (0,0) circle[radius=0.1\tmphauteurgradniv] ;
+				\draw[\miniskillswheelcols,line cap=round] ({\miniskilswheelposcurs}:{0.1\tmphauteurgradniv}) -- ({\miniskilswheelposcurs}:{0.6125\tmphauteurgradniv}) ;
+			}%
+	\end{tikzpicture}%
+}
+
+\NewDocumentCommand\miniskillwheel{ O{} D<>{} m }{%
+	\restoreKV[miniskillswheel]%
+	\setKV[miniskillswheel]{#1}%
+	\settototalheight{\tmphauteurgradniv}{\hbox{azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN}}%
+	\setlength{\tmphauteurgradniv}{0.90\tmphauteurgradniv}%.
+	\IfEq{\miniskillswheelmark}{}%
+		{}%
+		{%
+			\xintifboolexpr{\miniskillswheelmark >= 0 'and' \miniskillswheelmark <= #3}%
+				{%
+					\xdef\miniskilswheelposcurs{\xintfloateval{180-180*(\miniskillswheelmark)/(#3)}}%
+				}%
+				{%
+					\xdef\miniskilswheelposcurs{\xintfloateval{0.5*(#3)}}%
+				}%
+		}%
+	\IfSubStr{\miniskillswheelcol}{/}%
+		{%
+			\StrCut{\miniskillswheelcol}{/}{\miniskillswheelcolp}{\miniskillswheelcols}%
+		}%
+		{%
+			\xdef\miniskillswheelcolp{\miniskillswheelcol}\xdef\miniskillswheelcols{\miniskillswheelcol}%
+		}%
+	\begin{tikzpicture}[bezier bounding box,baseline={-0.075\tmphauteurgradniv},line width={0.075\tmphauteurgradniv},#2,transform shape]
+		\draw[\miniskillswheelcolp] (-15:{0.7588\tmphauteurgradniv}) arc(-15:195:{0.7588\tmphauteurgradniv}) --cycle ;
+		\foreach \i in {0,...,#3}{%
+			\draw[\miniskillswheelcolp,line cap=round] ({180-180*(\i)/#3}:{0.55\tmphauteurgradniv})--({180-180*(\i)/#3}:{0.65\tmphauteurgradniv}) ;
+		}
+		\IfEq{\miniskillswheelmark}{}%
+			{}%
+			{%
+				\draw[\miniskillswheelcols] (0,0) circle[radius=0.1\tmphauteurgradniv] ;
+				\draw[\miniskillswheelcols,line cap=round] ({\miniskilswheelposcurs}:{0.1\tmphauteurgradniv}) -- ({\miniskilswheelposcurs}:{0.6125\tmphauteurgradniv}) ;
+			}%
+	\end{tikzpicture}%
+}
+
+\NewDocumentCommand\tkzspeedometer{ O{} D<>{} m }{%
+	\restoreKV[miniskillswheel]%
+	\setKV[miniskillswheel]{#1}%
+	\setlength{\tmphauteurgradniv}{0.9\tmphauteurspeedom}%
+	\IfEq{\miniskillswheelmark}{}%
+		{}%
+		{%
+			\xintifboolexpr{\miniskillswheelmark >= 0 'and' \miniskillswheelmark <= #3}%
+				{%
+					\xdef\miniskilswheelposcurs{\xintfloateval{180-180*(\miniskillswheelmark)/(#3)}}%
+				}%
+				{%
+					\xdef\miniskilswheelposcurs{\xintfloateval{0.5*(#3)}}%
+				}%
+		}%
+	\IfSubStr{\miniskillswheelcol}{/}%
+		{%
+			\StrCut{\miniskillswheelcol}{/}{\miniskillswheelcolp}{\miniskillswheelcols}%
+		}%
+		{%
+			\xdef\miniskillswheelcolp{\miniskillswheelcol}\xdef\miniskillswheelcols{\miniskillswheelcol}%
+		}%
+	\begin{tikzpicture}[bezier bounding box,line width={0.075\tmphauteurgradniv},#2,transform shape]%
+		\draw[\miniskillswheelcolp] (-15:{0.7588\tmphauteurgradniv}) arc(-15:195:{0.7588\tmphauteurgradniv}) --cycle ;
+		\foreach \i in {0,...,#3}{%
+			\draw[\miniskillswheelcolp,line cap=round] ({180-180*(\i)/#3}:{0.55\tmphauteurgradniv})--({180-180*(\i)/#3}:{0.65\tmphauteurgradniv}) ;
+		}%
+		\IfEq{\miniskillswheelmark}{}%
+			{}%
+			{%
+				\draw[\miniskillswheelcols] (0,0) circle[radius=0.1\tmphauteurgradniv] ;%
+				\draw[\miniskillswheelcols,line cap=round] ({\miniskilswheelposcurs}:{0.1\tmphauteurgradniv}) -- ({\miniskilswheelposcurs}:{0.6125\tmphauteurgradniv}) ;%
+			}%
+	\end{tikzpicture}%
 }
 
 \endinput

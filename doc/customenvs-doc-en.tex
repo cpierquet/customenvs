@@ -34,8 +34,8 @@
 \usepackage[margin=1.5cm]{geometry}
 \setlength{\parindent}{0pt}
 
-\def\TPversion{0.2.1}
-\def\TPdate{01/09/2024}
+\def\TPversion{0.2.6}
+\def\TPdate{04/11/2024}
 \usepackage{tcolorbox}
 \sethlcolor{lightgray!25}
 \NewDocumentCommand\MontreCode{ m }{%
@@ -59,7 +59,7 @@
 				{\Huge \texttt{customenvs [en]}}\\
 				\\
 				{\Large Some custom environments,} \\
-				{\Large with spacing enhancements.} \\
+				{\Large or small patches.} \\
 			\end{tabular}
 			\renewcommand\arraystretch{1}
 			
@@ -111,29 +111,39 @@
 
 \section{History}
 
+\verb|v0.2.6|~:~~~Whell of skills, speedometer
+
+\verb|v0.2.5|~:~~~Bugfix with exercices (\textsf{[fr]} macro)
+
+\verb|v0.2.4|~:~~~Small box \textit{marker}
+
+\verb|v0.2.3|~:~~~Highway signs + sold banners (see \textsf{[fr]} doc)
+
+\verb|v0.2.2|~:~~~Flared arrow, with \TikZ
+
 \verb|v0.2.1|~:~~~Enhancements for \textit{stars skills} + AutoGrid for \TikZ\ (see \textsf{[fr]} doc)
 
-\verb|v0.2.0|~:~~~~Skills with stars (\textsf{fontawesome5} or \TikZ)
+\verb|v0.2.0|~:~~~Skills with stars (\textsf{fontawesome5} or \TikZ)
 
-\verb|v0.1.9|~:~~~~Title banner
+\verb|v0.1.9|~:~~~Title banner
 
-\verb|v0.1.8|~:~~~~Score banner
+\verb|v0.1.8|~:~~~Score banner
 
-\verb|v0.1.7|~:~~~~Small patch for \textsf{Vignette} macro (see \texttt{[fr]} documentation)
+\verb|v0.1.7|~:~~~Small patch for \textsf{Vignette} macro (see \texttt{[fr]} documentation)
 
-\verb|v0.1.6|~:~~~~Small patchs for \textsf{displayskip} + \textsf{pas-tableur} (see \texttt{[fr]} documentation)
+\verb|v0.1.6|~:~~~Small patchs for \textsf{displayskip} + \textsf{pas-tableur} (see \texttt{[fr]} documentation)
 
-\verb|v0.1.5|~:~~~~New macros for boxes with \textsf{tcolorbox} (see \texttt{[fr]} documentation)
+\verb|v0.1.5|~:~~~New macros for boxes with \textsf{tcolorbox} (see \texttt{[fr]} documentation)
 
-\verb|v0.1.4|~:~~~~Create a SMS conversation
+\verb|v0.1.4|~:~~~Create a SMS conversation
 
-\verb|v0.1.3|~:~~~~Environment for exercise(s) (in french doc)
+\verb|v0.1.3|~:~~~Environment for exercise(s) (in french doc)
 
-\verb|v0.1.2|~:~~~~Pencil of skills
+\verb|v0.1.2|~:~~~Pencil of skills
 
-\verb|v0.1.1|~:~~~~Skills table (only french for the moment...)
+\verb|v0.1.1|~:~~~Skills table (only french for the moment...)
 
-\verb|v0.1.0|~:~~~~Initial version
+\verb|v0.1.0|~:~~~Initial version
 
 \vspace*{5mm}
 
@@ -665,6 +675,170 @@ It's possible to redefine \MontreCode{\textbackslash part} (for example).
 {\LARGE We ty inline \tkzLevelStars{2.25} with score 2.25}\par
 {\LARGE We ty inline \tkzLevelStars[valign=false]{1.75} with score 1.75}\par
 \tkzLevelStars[colframe=red,colback=yellow,maxlevel=5]{3}
+\end{demohigh}
+
+\subsection{Flared arrow}
+
+\begin{codehigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\tkzFlaredArrow[%
+  color=...,           %color of arrow
+  arrowsize=...,       %size (auto or H/W )
+  bend=...,            %empty for straigth or left/... or right/...
+  thickness=...,       %size for the beginning
+  factor=...,          %factor for calculing size for ending
+  arrowstyle=...,      %style (arrows.meta)
+  move=...             %boolean for moving instead coordinates
+  ]%
+  {begin}{end or move}
+\end{codehigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+%arrow 0.5mm -> 1.25mm
+\begin{tikzpicture}
+\tkzFlaredArrow%
+  [thickness=0.5mm,factor=2.5,bend=left/30,color=red,arrowstyle=Triangle]%
+  {0,0}{5,1.5}
+\end{tikzpicture}
+\end{demohigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\begin{tikzpicture}
+  \draw[thin,lightgray] (-3,-1) grid (5,5) ;
+  \coordinate (A) at (0,0) ; \coordinate (B) at (4,1) ;
+  \coordinate (C) at (1,1) ; \coordinate (D) at (5,4) ;
+  \coordinate (E) at (0,1) ; \coordinate (F) at (0,5) ;
+  \coordinate (G) at (-2,0) ;
+  \tkzFlaredArrow[color=green,arrowstyle=Triangle]{A}{B}
+  \tkzFlaredArrow[color=blue,bend=right/10]{D}{C}
+  \tkzFlaredArrow%
+    [color=red,bend=left/45,arrowstyle=Stealth,thickness=0.1mm,factor=10]%
+    {-2,1}{0,4}
+  \tkzFlaredArrow%
+    [color=red,bend=right/45,thickness=0.1mm,factor=10,arrowstyle=Stealth]%
+    {-2,1}{0,4}
+  \tkzFlaredArrow[color=teal,move,bend=left/10]{-3,-1}{5,1}
+  \end{tikzpicture}
+\end{demohigh}
+
+\subsection{Small markerbox}
+
+\begin{codehigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\tbcmarker[color=...,width=...,font=...]{text}
+\end{codehigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\tbcmarker{my text}
+\end{demohigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\tbcmarker[color=olive,font=\normalfont\normalsize]{my text}
+\end{demohigh}
+
+%\subsection{Letters wirh pixelart style (experimental)}
+%
+%\begin{codehigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+%%one letter only
+%\PixlLetter%
+%    [height=...,thick=...,color=...,gridcolor=...,
+%    offseth=...,offsetv=...,gridafter=...,nospaceafter=...]
+%    <tikzpicture options>
+%    {letter}
+%
+%%several words
+%\PixlLetters%
+%    [height=...,thick=...,color=...,gridcolor=...,
+%    offseth=...,offsetv=...,gridafter=...,nospaceafter=...]
+%    {letters}
+%\end{codehigh}
+%
+%\begin{codehigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+%\PixlLetter{M}\PixlLetter{o}\PixlLetter{n}\PixlLetter{k}\PixlLetter{e}\PixlLetter{y}
+%\end{codehigh}
+%
+%\PixlLetter{M}\PixlLetter{o}\PixlLetter{n}\PixlLetter{k}\PixlLetter{e}\PixlLetter{y}
+%
+%\begin{codehigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+%\PixlLetters[height=2cm,color=red,gridafter,offsetv=1]{(Monkey)}
+%\end{codehigh}
+%
+%\PixlLetters[height=2cm,color=red,gridafter,offsetv=1]{(Monkey)}
+%
+%\begin{codehigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+%\PixlLetters[color=blue]{Monkeys roxxxx !?}
+%\end{codehigh}
+%
+%\PixlLetters[color=blue]{Monkeys roxxxx !?}
+%
+%\begin{codehigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+%\PixlLetters[color=red]{1+1=2}
+%\end{codehigh}
+%
+%\PixlLetters[color=red]{1+1=2}
+
+\subsection{Wheel of skills / speedometer}
+
+\begin{codehigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\WheelOfSkills[%
+    Radius=...,      %radius of wheel
+    Mark=...,        %absolute position of optional marker
+    Font=...,        %font of optional labels
+    SkillsList=...,  %list of optional skill labels
+    ]%
+    {number of skills or list of colors}
+\end{codehigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\WheelOfSkills[%
+    Radius=3cm,%
+    Mark=5.85,%
+    Font=\scriptsize\bfseries\ttfamily,%
+    SkillsList={Niv.1,Niv.2,Niv.3,Niv.4,Niv.5,Niv.6,Niv.7,Niv.8,Niv.9,Niv.10}]%
+    {10}%
+\end{demohigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\WheelOfSkills[%
+    Mark=1.5,%
+    Font=\scriptsize\bfseries\sffamily,%
+    SkillsList={LOW-MODERATE,NORMAL,HIGH,VERY HIGH,SEVERE,EXTREME,CATASTROPHIC}
+    ]%
+    {yellow!50,orange!50,red!50,blue!50,teal!50,purple!50,violet!50}%
+\end{demohigh}
+
+\begin{codehigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\begin{SkillsWheel}[%
+    Radius=...,      %radius of wheel
+    Mark=...,        %absolute position of optional marker
+    Font=...,        %font of optional labels
+    SkillsList=...,  %list of optional skill labels
+    ]{number of skills or list of colors}
+    \PutIconsSkills[Pos=...,Scale=...]{list of icons}
+\end{SkillsWheel}
+\end{codehigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+\begin{SkillsWheel}[Radius=5cm,Mark=5.85]%
+        {yellow!50,orange!50,red!50,blue!50,teal!50,purple!50,violet!50}
+    \PutIconsSkills[Echelle=3]%
+    {\faPython,\faAdjust,\faAngellist,\faAmbulance,\faAdjust,\faBabyCarriage,\faBlender}
+\end{SkillsWheel}
+\end{demohigh}
+
+\begin{codehigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+%inline version, with automatic dimensions
+\miniskillwheel[Colors=...,Mark=...]{nb of levels}
+
+%normal version
+\tkzspeedometer[Size=...,Mark=...,Colors=...]{nb levels}
+\end{codehigh}
+
+\begin{demohigh}[language=latex/latex3,style/main=teal!25,style/code=teal!25]
+%inline version, with automatic dimensions
+\scalebox{2.25}[2.25]{\sffamily Small inline \textit{skillwheel}
+\miniskillwheel[Colors=red/blue,Mark=4.33]{7} for testing.}
+
+%normal version
+\tkzspeedometer[Size=5cm,Mark=2.25,Colors=teal/magenta]{6}
 \end{demohigh}
 
 \end{document}

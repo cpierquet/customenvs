@@ -39,10 +39,11 @@
 \usepackage[margin=1.5cm]{geometry}
 \setlength{\parindent}{0pt}
 
-\def\TPversion{0.2.1}
-\def\TPdate{01 septembre 2024}
+\def\TPversion{0.2.6}
+\def\TPdate{4 novembre 2024}
 \usepackage{tcolorbox}
 \tcbuselibrary{listingsutf8}
+%\usepackage{eurosym}
 \newtcblisting{DemoCode}[1]{%
 	enhanced,width=0.95\linewidth,center,%
 	bicolor,size=title,%
@@ -50,6 +51,8 @@
 	colbacklower=cyan!1!white,%
 	colframe=cyan!75!black,%
 	listing options={%
+		inputencoding=utf8,
+		%literate={`E}{{€}}{1},
 		breaklines=true,%
 		breakatwhitespace=true,%
 		style=tcblatex,basicstyle=\small\ttfamily,%
@@ -66,10 +69,10 @@
 		keywordstyle={\color{violet}},%
 		classoffset=2,%
 		alsoletter={-},%
-		morekeywords={\ReponsesQCM,MultiCols,\CreerListeItems,\ListeChoixItems,\TableauCompetences,\CrayonDeCompetences,\StyleEnvtExo,\StyleEnvtExoDefaut,\TitreExo,\ipsum,EnvSMS,\SMSrec,\SMSenv,BoiteSimple,\SujetTitreExo,\CircledNumber,\AffVignette,\BoiteArrondie,\ChangerDisplaySkip,\celcouleur,\celfusion,\lignetxt,\colonnetxt,\celnumbreak,\celtxt,\BandeauScore,\InsererImage,\tkzBannerTri,\NiveauDiffExos,\tkzEtoiles,\tkzGrilleAuto,\tkzAutoGridLocal,\tkzAutoGridActivate},%
+		morekeywords={\ReponsesQCM,MultiCols,\CreerListeItems,\ListeChoixItems,\TableauCompetences,\CrayonDeCompetences,\StyleEnvtExo,\StyleEnvtExoDefaut,\TitreExo,\ipsum,EnvSMS,\SMSrec,\SMSenv,BoiteSimple,\SujetTitreExo,\CircledNumber,\AffVignette,\BoiteArrondie,\ChangerDisplaySkip,\celcouleur,\celfusion,\lignetxt,\colonnetxt,\celnumbreak,\celtxt,\BandeauScore,\InsererImage,\tkzBannerTri,\NiveauDiffExos,\tkzEtoiles,\tkzGrilleAuto,\tkzAutoGridLocal,\tkzAutoGridActivate,\tkzFlecheEvasee,PanneauAutoroute,\AfficheSoldes,\tbcmarker,\VilleDist,\RoueNiveaux,EnvRoueNiveaux,\PlacerIconeNiveau,\PlacerIconesNiveaux,\MiniCompteurNiveaux,\tkzspeedometer},%
 		keywordstyle={\color{green!50!black}},%
 		classoffset=3,%
-		morekeywords={Largeur,Filets,EspacesCL,NbCols,Labels,PoliceLabels,EspaceLabels,Swap,Type,CoeffEspVert,EpTrait,Alea,LargeurNivs,Niveaux,NoticeNiveaux,Titre,PolTitre,PolNotice,PolComp,LigneSep,CouleurNotice,CouleurNiveaux,CouleurFond,Note,Notice,PoliceCateg,PoliceBloc,Couleurs,LargeurBloc,Echelle,NoirBlanc,Libelle,EpTrait,Police,Type,ComplementTitre,Titre,CodeDebut,Couleur,EchelleImage,Decoration,Trait,Avatar,AffAvatar,NoirBlanc,CouleurE,CouleurR,CouleurFond,Hauteur,Largeur,PoliceTxt,CouleurTitre,AlignH,bg,txt,bthick,bcol,raise,Type,EspH,Fond,Texte,Style,Dense,Avant,AvantS,Apres,ApresS,Global,align,width,Legende,CouleurFond,Hauteur,Ratio,AffLegende,Couleurs,EchelleSymboles,Symboles,vRemplir,vOffset,vCentrer,height,width,blockwidth,collight,colmedium,coldar,coltxt,fonttxt,swap,maincolor,logo,type,num,dispblock,customtype,Couleur,AlignV,Offset,NiveauMax,pasX,pasY,grilleauto},%
+		morekeywords={Largeur,Filets,EspacesCL,NbCols,Labels,PoliceLabels,EspaceLabels,Swap,Type,CoeffEspVert,EpTrait,Alea,LargeurNivs,Niveaux,NoticeNiveaux,Titre,PolTitre,PolNotice,PolComp,LigneSep,CouleurNotice,CouleurNiveaux,CouleurFond,Note,Notice,PoliceCateg,PoliceBloc,Couleurs,LargeurBloc,Echelle,NoirBlanc,Libelle,EpTrait,Police,Type,ComplementTitre,Titre,CodeDebut,Couleur,EchelleImage,Decoration,Trait,Avatar,AffAvatar,NoirBlanc,CouleurE,CouleurR,CouleurFond,Hauteur,Largeur,PoliceTxt,CouleurTitre,AlignH,bg,txt,bthick,bcol,raise,Type,EspH,Fond,Texte,Style,Dense,Avant,AvantS,Apres,ApresS,Global,align,width,Legende,CouleurFond,Hauteur,Ratio,AffLegende,Couleurs,EchelleSymboles,Symboles,vRemplir,vOffset,vCentrer,height,width,blockwidth,collight,colmedium,coldar,coltxt,fonttxt,swap,maincolor,logo,type,num,dispblock,customtype,Couleur,AlignV,Offset,NiveauMax,pasX,pasY,grilleauto,TailleFleche,Direction,Coeff,TypeFleche,Deplacement,LineCap,Epaisseur,CouleurCartouche,Fleches,CouleurFond,CouleurTitre,PoliceCartouche,TypeFleche,EspacementV,OffsetFleches,Dernier,PoliceEntete,PolicePrix,PoliceReduc,OffsetReduc,AgrandirReduc,Rayon,Police,ListeNiveaux,Marqueur,Pos,Echelle,Couleurs,Taille},%
 		keywordstyle={\color{orange}}
 	},%
 	#1
@@ -149,6 +152,16 @@
 
 \section{Historique}
 
+\verb|v0.2.6|~:~~~Roue des compétences / speedometer
+
+\verb|v0.2.5|~:~~~Correction du fonctionnement de \texttt{EnvtExo}
+
+\verb|v0.2.4|~:~~~Petite boîte type \textit{marker}
+
+\verb|v0.2.3|~:~~~Panneaux autoroutiers + Affichettes de soldes
+
+\verb|v0.2.2|~:~~~Ajout d'une commande pour des flèches évasées, en \TikZ\
+
 \verb|v0.2.1|~:~~~Amélioration de la gestion des étoiles pour des niveaux de difficultés + Grille auto pour \TikZ\
 
 \verb|v0.2.0|~:~~~Étoiles pour des niveaux de difficultés (compatible avec \texttt{EnvtExo})
@@ -218,7 +231,10 @@ Les packages chargés sont :
 	\item \MontreCode{tabularray} ;
 	\item \MontreCode{xcolor} ;
 	\item \MontreCode{fontawesome5} ;
-	\item \MontreCode{tikz} avec les librairies \MontreCode{decorations.pathmorphing,positioning,shapes.misc,calc}.
+	\item \MontreCode{tikz} avec les librairies :
+	\begin{itemize}
+		\item \MontreCode{decorations.pathmorphing,positioning,shapes.misc,calc,arrows,arrows.meta}.
+	\end{itemize}
 \end{itemize}
 
 À noter que, pour des raisons de compatibilité (ou d'incompatibilité), les packages \MontreCode{enumitem}/\MontreCode{multicol}/\MontreCode{tabularray}/\MontreCode{xcolor}/\MontreCode{fontawesome5} peuvent ne pas être chargés par \MontreCode{customenvs} (auxquels cas l'utilisateur devra les avoir chargés pour faire fonctionner certains environnements) via les options :
@@ -807,6 +823,133 @@ L'argument, obligatoire et entre \MontreCode{\{...\}} est la liste des catégori
 
 \pagebreak
 
+\section{Roue de compétences}
+
+\subsection{Principe et fonctionnement}
+
+L'idée est de proposer une commande et un environnement pour créer une \textit{demie-roue} de compétences, basé sur \MontreCode{TikZ}.
+
+\begin{DemoCode}{listing only}
+\RoueNiveaux[clés]<options tikz>{couleurs ou nb de niveaux}%
+\end{DemoCode}
+
+\begin{DemoCode}{listing only}
+\begin{EnvRoueNiveaux}[clés]<options tikz>{couleurs ou nb de niveaux}%
+	\PlacerIconesNiveaux[clés]{liste d'icônes}
+\end{EnvRoueNiveaux}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\RoueNiveaux{5}\hspace{5mm}
+\RoueNiveaux{green!50,yellow!50,orange!50,red!50,brown!50}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\begin{EnvRoueNiveaux}{4}
+	\PlacerIconesNiveaux{\faPython,\faAdjust,\faAngellist,\faAmbulance}
+\end{EnvRoueNiveaux}
+\end{DemoCode}
+
+\subsection{La commande et l'environnement}
+
+Les \MontreCode{clés} (communes) disponibles, à donner entre \MontreCode{[...]}, sont :
+
+\begin{itemize}
+	\item \MontreCode{Rayon} : rayon de la roue ; \MontreCode{4cm} par défaut
+	\item \MontreCode{Police} : police des éventuels labels ; \MontreCode{\textbackslash bfseries\textbackslash sffamily} par défaut
+	\item \MontreCode{ListeNiveaux} : liste éventuelle des niveaux, sous la forme \MontreCode{Label1,Label2,...}
+	\item \MontreCode{Marqueur} : position relative d'un éventuel marqueur.
+\end{itemize}
+
+L'argument optionnel, et entre \MontreCode{<...>}, permet de spécifier des options à la figure \MontreCode{TikZ} (comme une rotation, un alignement, etc)
+
+\smallskip
+
+L'argument, obligatoire et entre \MontreCode{\{...\}} est la liste des couleurs, ou le nombre de catégories pour une sortie en N\&B.
+
+\medskip
+
+Pour l'environnement, la commande \MontreCode{\textbackslash PlacerIconesNiveaux} permet de placer des icônes en lieu et place des libellés. les clés disponibles sont :
+
+\begin{itemize}
+	\item \MontreCode{Pos} :  position (excentricité) des icônes ; \MontreCode{0.8} par défaut
+	\item \MontreCode{Echelle} : échelle des icônes ; \MontreCode{2}.
+\end{itemize}
+
+\subsection{Exemples}
+
+\begin{DemoCode}{}
+\RoueNiveaux[%
+	Marqueur=1.5,%
+	Police=\scriptsize\bfseries\sffamily,%
+	ListeNiveaux={LOW-MODERATE,NORMAL,HIGH,VERY HIGH,SEVERE,EXTREME,CATASTROPHIC}
+	]%
+	{yellow!50,orange!50,red!50,blue!50,teal!50,purple!50,violet!50}%
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\RoueNiveaux[%
+	Rayon=3cm,%
+	Marqueur=5.85,%
+	Police=\scriptsize\bfseries\ttfamily,%
+	ListeNiveaux={%
+		Niv.1,Niv.2,Niv.3,Niv.4,Niv.5,Niv.6,Niv.7,Niv.8,Niv.9,Niv.10,Niv.11,Niv.12}%
+	]%
+	{12}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\begin{EnvRoueNiveaux}[Rayon=5cm,Marqueur=5.85]%
+		{yellow!50,orange!50,red!50,blue!50,teal!50,purple!50,violet!50}
+	\PlacerIconesNiveaux[Echelle=3]%
+		{\faPython,\faAdjust,\faAngellist,\faAmbulance,\faAdjust,\faBabyCarriage,\faBlender}
+\end{EnvRoueNiveaux}
+\end{DemoCode}
+
+\pagebreak
+
+\subsection{\og Speed-o-meter \fg}
+
+En marge de la roue \textit{détaillée}, il est possible d'utiliser une version simplifiée, soit en mode en ligne, soit en mode autonome.
+
+\smallskip
+
+À noter qu'en mode en ligne, les dimensions sont calculées automatiquement en fonction de la police courante.
+
+\begin{DemoCode}{listing only}
+%à utiliser en mode en ligne
+\MiniCompteurNiveaux[clés]<options tikz>{nb niveaux}
+\end{DemoCode}
+
+\begin{DemoCode}{listing only}
+%mode autonome
+\tkzspeedometer[clés]<options tikz>{nb niveaux}
+\end{DemoCode}
+
+Les \MontreCode{clés} (communes) disponibles, à donner entre \MontreCode{[...]}, sont :
+
+\begin{itemize}
+	\item \MontreCode{Couleurs} : couleur(s) (sous la forme \MontreCode{couleur} ou \MontreCode{couleurp/couleurs}) ; \MontreCode{black} par défaut
+	\item \MontreCode{Marqueur} : position relative d'un éventuel marqueur ;
+	\item \MontreCode{Taille} : taille du cadran (en mode autonome uniquement !)
+\end{itemize}
+
+L'argument optionnel, et entre \MontreCode{<...>}, permet de spécifier des options à la figure \MontreCode{TikZ} (comme une rotation, un alignement, etc)
+
+\smallskip
+
+L'argument, obligatoire et entre \MontreCode{\{...\}} est le nombre de niveaux.
+
+\begin{DemoCode}{}
+\scalebox{3}[3]{Petit compteur \MiniCompteurNiveaux[Couleurs=blue/red,Marqueur=4.33]{6} en ligne.}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\tkzspeedometer[Marqueur=3.66]{5}
+\end{DemoCode}
+
+\pagebreak
+
 \section{Bandeau de score}
 
 \subsection{Principe et fonctionnement}
@@ -1011,6 +1154,7 @@ Hormis le style global, il est possible de modifier/ajouter certains éléments 
 		\item une icône, via \texttt{fontawesome5}, dont la hauteur est adaptée à la hauteur de la ligne en cours ;
 		\item des étoiles, via \texttt{fontawesome5} ou \TikZ, dont la hauteur est adaptée à la hauteur de la ligne en cours ;
 		\item un petit chronomètre, via \texttt{pictochrono}, dont la hauteur est adaptée à la hauteur de la ligne en cours ;
+		\item un petit \textit{speedometer}, dont la hauteur est adaptée à la hauteur de la ligne en cours ;
 		\item une ceinture colorée, via \texttt{coloredbelts}, dont la hauteur est adaptée à la hauteur de la ligne en cours ;
 	\end{itemize}
 	\item le compteur (nommé \MontreCode{numeroexo}) peut être désactivé et \textit{adpaté} via les commandes classiques de compteurs.
@@ -1031,6 +1175,7 @@ Les \MontreCode{clés} disponibles, à donner entre \MontreCode{[...]}, sont :
 		\item \MontreCode{Ceinture/...} := afficher la ceinture couleur \MontreCode{...} à la fin de la ligne ;
 		\item \MontreCode{Chrono/...} := afficher le chrono de durée \MontreCode{...} à la fin de la ligne ;
 		\item \MontreCode{Points/...} := afficher les points \MontreCode{(... points)} à la fin de la ligne ;
+		\item \MontreCode{Speedo/...§...} := afficher un \textit{speedometer} ;
 		\item \MontreCode{faEtoiles/...} := afficher des étoiles de difficultés à la fin de la ligne ;
 		\item \MontreCode{tkzEtoiles/...} := afficher des étoiles de difficultés à la fin de la ligne ;
 	\end{itemize}
@@ -1048,7 +1193,6 @@ La commande d'affichage des étoiles de difficultés est indépendante de l'envi
 \begin{DemoCode}{listing only}
 %commande d'étoiles (max=3 par défaut) avec fontawesome5
 \NiveauDiffExos[max]{nb}
-
 %commande d'étoiles (max=3 par défaut) avec tikz
 \tkzEtoiles[Couleur=...,CouleurFond=...,Offset=...,NiveauMax=...,AlignV=...]{nb}
 \end{DemoCode}
@@ -1116,28 +1260,30 @@ Le code proposé utilise l'environnement, mais la commande simple est complètem
 
 \begin{EnvtExo}[Decoration=tkzEtoiles/3.5§5]\ipsum<Lang=FR,Type=sent>\end{EnvtExo}%exo8
 
-\begin{EnvtExo}[Decoration=Points/7]\ipsum<Lang=FR,Type=sent>\end{EnvtExo}%exo9
+\begin{EnvtExo}[Decoration=Points/7.5]\ipsum<Lang=FR,Type=sent>\end{EnvtExo}%exo9
 
-\begin{EnvtExo}[Type=Perso/{Titre perso }]\ipsum<Lang=FR,Type=sent>\end{EnvtExo}%exo10
+\begin{EnvtExo}[Decoration=Speedo/4.25§6]\ipsum<Lang=FR,Type=sent>\end{EnvtExo}%exo10
+
+\begin{EnvtExo}[Type=Perso/{Titre perso }]\ipsum<Lang=FR,Type=sent>\end{EnvtExo}%exo11
 
 \StyleEnvtExo[Couleur=red,CouleurDeco=teal,Police=\bfseries\ttfamily,EpTrait=2pt, Libelle={Exercice n°}]
 
 \begin{EnvtExo}[Decoration=Icone/\faAddressBook]
 \ipsum<Lang=FR,Type=sent>
-\end{EnvtExo}%exo11
+\end{EnvtExo}%exo12
 
 
-\begin{EnvtExo}[Type=Perso/{Titre perso },Decoration=Chrono/25,Trait=dashilles]%exo12
+\begin{EnvtExo}[Type=Perso/{Titre perso },Decoration=Chrono/25,Trait=dashilles]%exo13
 \ipsum<Lang=FR,Type=sent>
 \end{EnvtExo}
 
 \StyleEnvtExoDefaut
 \begin{EnvtExo}%
-	[Type=Perso/{Titre perso~},Decoration=Image/goku_ssj4,Trait=non,Compteur=false]%exo13
+	[Type=Perso/{Titre perso~},Decoration=Image/goku_ssj4,Trait=non,Compteur=false]%exo14
 \ipsum<Lang=FR,Type=sent>
 \end{EnvtExo}
 
-\TitreExo[Type=Perso/{Annexe Exercice 3},Compteur=false,Decoration=Image/sseiya_aiolos]%exo14
+\TitreExo[Type=Perso/{Annexe Exercice 3},Compteur=false,Decoration=Image/sseiya_aiolos]%exo15
 \ipsum<Lang=FR,Type=sent>
 \end{DemoCode}
 
@@ -1316,7 +1462,7 @@ On se place dans la plage \VignetteTableur{A3:B5} pour...
 
 \end{DemoCode}
 
-\subsection{Boîte arrondie}
+\subsection{Boîte arrondie, petite boîte type marker}
 
 \begin{DemoCode}{listing only}
 \BoiteArrondie[Fond=...,Texte=...,EspH=...,Style=...]{texte}[noeud tikz]
@@ -1325,6 +1471,69 @@ On se place dans la plage \VignetteTableur{A3:B5} pour...
 \begin{DemoCode}{}
 On lance le logiciel \BoiteArrondie[Fond=cyan!33,Texte=violet,EspH=2mm,Style=rect]{situé sur le bureau} en cliquant \BoiteArrondie[Fond=lightgray!25,Texte=darkgray]{droit}.
 \end{DemoCode}
+
+\begin{DemoCode}{listing only}
+\tbcmarker[Couleur=...,Largeur=...,Police=...]{contenu}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\tbcmarker{contenu}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\tbcmarker[Couleur=olive,Police=\normalfont\normalsize]{contenu}
+\end{DemoCode}
+
+%\subsection{Lettres à la manière d'un pixelart (expérimental)}
+%
+%L'idée est de proposer une présentation de (quelques) lettres (faite en \TikZ) sous la forme d'un \textit{pixelart}.
+%
+%\smallskip
+%
+%Par défaut les lettres ont une \textit{hauteur} de 5 carreaux (la taille est déterminée par rapport à la hauteur globale souhaitée, qui vaut par défaut 11~mm), et 2 carreaux ont été rajoutés en haut et en bas, et 1 carreau de chaque côté.
+%
+%\smallskip
+%
+%Attention cependant aux caractères spéciaux et/ ou aux lettres accentuées, qui pourraient poser problème (au quel cas la macro d'insertion individuelle est à préférer !)
+%
+%\begin{DemoCode}{listing only}
+%%une lettre
+%\PixlLetter%
+%    [height=...,thick=...,color=...,gridcolor=...,
+%    offseth=...,offsetv=...,gridafter=...,nospaceafter=...]
+%    <options tikzpicture>
+%    {lettre}
+%
+%%l'apostrophe, si besoin...
+%\PixlLetterQuote%
+%    [height=...,thick=...,color=...,gridcolor=...,
+%    offseth=...,offsetv=...,gridafter=...,nospaceafter=...]
+%    <options tikzpicture>
+%
+%%plusieurs lettres
+%\PixlLetters%
+%    [height=...,thick=...,color=...,gridcolor=...,
+%    offseth=...,offsetv=...,gridafter=...,nospaceafter=...]
+%    {lettres}
+%\end{DemoCode}
+%
+%\begin{DemoCode}{listing only}
+%\PixlLetter{S}\PixlLetter{i}\PixlLetter{n}\PixlLetter{g}\PixlLetter{e}
+%
+%\PixlLetters[height=2cm,color=red,gridafter,offsetv=1]{(Singe)}
+%
+%\PixlLetters[color=blue]{Les singes, c'est super !?}
+%
+%\PixlLetters[color=red]{1+1=2}
+%\end{DemoCode}
+%
+%\PixlLetter{S}\PixlLetter{i}\PixlLetter{n}\PixlLetter{g}\PixlLetter{e}
+%
+%\PixlLetters[height=2cm,color=red,gridafter,offsetv=1]{(Singe)}
+%
+%\PixlLetters[color=blue]{Les singes, c'est super !?}
+%
+%\PixlLetters[color=red]{1+1=2}
 
 \subsection{Bannière de titre}
 
@@ -1411,6 +1620,117 @@ Il est de ce fait \textit{normalement} possible (à vérifier quand même\ldots)
 \renewcommand\thepart{\ifnum\value{part}<10\relax0\fi\arabic{part}}
 
 \part{Éléments de logique}<type=TP,logo=\faAirbnb>
+\end{DemoCode}
+
+\pagebreak
+
+\subsection{Panneaux autoroutiers}
+
+L'idée est de proposer des panneaux type \textit{autoroutes}, réalisés via \MontreCode{tcolorbox}.
+
+Le style global est fixé, mais des éléments de personnalisations sont possibles..
+
+\begin{DemoCode}{listing only}
+\begin{PanneauAutoroute}[clés]{titre}
+%contenu
+\end{PanneauAutoroute}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\begin{PanneauAutoroute}{A4}
+REIMS\hfill~145\\
+PARIS\hfill~250
+\end{PanneauAutoroute}
+\end{DemoCode}
+
+Les clés, optionnelles et entre \MontreCode{[...]} sont :
+
+\begin{itemize}
+	\item \MontreCode{Fleches} : nombre de flèches à afficher (\MontreCode{0} par défaut)
+	\item \MontreCode{CouleurFond} : couleur de fond (\MontreCode{blue} par défaut)
+	\item \MontreCode{CouleurTitre} : couleur de la boîte \textit{titre} (\MontreCode{red} par défaut)
+	\item \MontreCode{Largeur} : largeur du panneau (\MontreCode{10cm} par défaut)
+	\item \MontreCode{Police} : police du panneau
+	\item \MontreCode{PoliceCartouche} : police du titre
+	\item \MontreCode{TypeFleche} : flèche(s) à afficher
+	\item \MontreCode{EspacementV} : interligne (\MontreCode{2.5mm} par défaut)
+	\item \MontreCode{Dernier} : booléen pour préciser que la boîte sera la dernière de la série (pour l'espace après).
+\end{itemize}
+
+\begin{DemoCode}{}
+\begin{PanneauAutoroute}[Largeur=\linewidth,Dernier=false]{TD01}
+	\VilleDist{COMPETENCE 1}{\faCheck}  %macro interne pour afficher une ligne
+	\VilleDist*{COMPETENCE 2}{\faCheck} %macro pour afficher la dernière ligne
+\end{PanneauAutoroute}
+
+\begin{PanneauAutoroute}%
+	[CouleurFond=olive,Fleches=2,Police=\bfseries\huge\fontfamily{phv}\selectfont]{}
+	LILLE\hfill~301\\
+	AMIENS\hfill~213
+\end{PanneauAutoroute}
+\end{DemoCode}
+
+\pagebreak
+
+\subsection{Affichettes de soldes}
+
+L'idée est de proposer des petites affichettes pour des réductions, réalisées via \MontreCode{tcolorbox} (sur une idée de \textit{Sébastien Lozano}).
+
+Le style global est fixé, mais des éléments de personnalisations sont possibles..
+
+\begin{DemoCode}{listing only}
+\AfficheSoldes[clés]{prix avant}{prix après}{réduction}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\AfficheSoldes{99\texteuro}{79\texteuro}{-20\%}
+\end{DemoCode}
+
+Les clés, optionnelles et entre \MontreCode{[...]} sont :
+
+\begin{itemize}
+	\item \MontreCode{Couleur} : couleur principale (\MontreCode{gray} par défaut)
+	\item \MontreCode{Largeur} : largeur (\MontreCode{auto} ou par défaut) à définir
+	\item \MontreCode{PoliceEntete} : police du titre
+	\item \MontreCode{PolicePrix} : police des prix
+	\item \MontreCode{PoliceReduc} : police de la réduction
+	\item \MontreCode{Titre} : titre de l'affiche (\MontreCode{GRANDE DÉMARQUE} par défaut)
+	\item \MontreCode{OffsetReduc} : \textit{pente} pour le bandeau de réduction (\MontreCode{1.25cm} par défaut)
+	\item \MontreCode{AgrandirReduc} : augmenter la hauteur de la partie réduction
+\end{itemize}
+
+Donc la hauteur est fixée par \textit{calculs}, et également la largeur si \MontreCode{Largeur=auto}.
+
+La largeur \MontreCode{auto} permet de faire \textit{marcher} des prix jusque \MontreCode{99\,999\,€}.
+
+\begin{DemoCode}{}
+\AfficheSoldes{99\texteuro}{79\texteuro}{-20\,\%}~%
+\AfficheSoldes[Couleur=red]{99\texteuro}{79\texteuro}{-20\,\%}~%
+\AfficheSoldes[Couleur=blue]{\ldots\texteuro}{79\texteuro}{-20\,\%}~%
+\AfficheSoldes[Couleur=teal]{\ldots}{\ldots}{\ldots}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\AfficheSoldes[%
+		Couleur=magenta,%
+		Largeur=6cm,%
+		PoliceEntete=\huge\sffamily\bfseries,%
+		PolicePrix=\ttfamily,%
+		PoliceReduc=\bfseries\Huge\sffamily,%
+		AgrandirReduc=8mm
+		]%
+	{1\,500\texteuro}{1\,299\texteuro}{-\ldots\,\%}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\AfficheSoldes[%
+		Couleur=cyan,%
+		PoliceEntete=\bfseries\huge\fontfamily{qhv}\selectfont,%
+		PolicePrix=\fontfamily{qhv}\selectfont,%
+		PoliceReduc=\bfseries\Huge\fontfamily{qhv}\selectfont,%
+		AgrandirReduc=1cm
+		]%
+	{\makebox[1cm]{\dotfill}\texteuro}{1\,299\texteuro}{-30\,\%}
 \end{DemoCode}
 
 \pagebreak
@@ -1603,5 +1923,77 @@ La version étoilée marque également l'origine $(0;0)$.
 \end{DemoCode}
 
 La version étoilée marquera également l'origine $(0;0)$.
+
+\pagebreak
+
+\subsection{Flèche évasée, en \TikZ}
+
+L'idée est de proposer une commande, en  \TikZ, pour représenter une flèche évasée, avec des paramètres optionnels.
+
+\begin{DemoCode}{listing only}
+\tkzFlecheEvasee[clés]{départ}{arrivée ou déplacement}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\begin{tikzpicture}
+	\tkzFlecheEvasee{0,0}{5,1.5}
+\end{tikzpicture}
+\end{DemoCode}
+
+Les \MontreCode{clés} disponibles, à donner entre \MontreCode{[...]}, sont :
+
+\begin{itemize}
+	\item \MontreCode{Couleur=...} : couleur de la flèche ;
+	\item \MontreCode{Epaisseur=...} : taille initiale du trait (\MontreCode{0.5mm} par défaut) ;
+	\item \MontreCode{Direction=...} : direction de la flèche, avec angle éventuel ;
+	\item \MontreCode{Coeff=...} : coefficient pour la taille finale du trait (\MontreCode{4} par défaut) ;
+	\item \MontreCode{TypeFleche=...} : type de la flèche, issue de \MontreCode{arrows.meta} ;
+	\item \MontreCode{TailleFleche=...} : booléen pour la taille de la partie flèche (\MontreCode{auto} par défaut), en langage \MontreCode{arrows.meta} ;
+	\item \MontreCode{Deplacement} : booléen pour spécifier qu'on travaille avec un déplacement pour l'arrivée.
+\end{itemize}
+
+Le premier argument obligatoire, permet de spécifier le nœud de départ ou les coordonnées du point de départ.
+
+Le second argument obligatoire, permet de spécifier le nœud d'arrivée ou les coordonnées du point d'arrivée, mais également le déplacement dans le cas ou \MontreCode{Deplacement=true}.
+
+\medskip
+
+Par défaut, et en mode \MontreCode{auto} :
+
+\begin{itemize}
+	\item le début du trait mesure \MontreCode{Epaisseur=0.5mm} ;
+	\item la fin du trait mesure \MontreCode{4*Epaisseur=2mm} ;
+	\item les dimensions de la flèche sont \MontreCode{H=2*4*Epaisseur=4mm} et \MontreCode{L=2.1*4*Epaisseur=4.2mm}.
+\end{itemize}
+
+À noter que pour les flèches type \MontreCode{Stealth}, un ajustement est sans doute à prévoir pour compenser le \textit{creux}.
+
+\begin{DemoCode}{}
+%flèche 0.5mm -> 1.25mm
+\begin{tikzpicture}
+	\tkzFlecheEvasee%
+		[Epaisseur=0.5mm,Coeff=2.5,Direction=left/30,Couleur=red,TypeFleche=Triangle]%
+		{0,0}{5,1.5}
+\end{tikzpicture}
+\end{DemoCode}
+
+\begin{DemoCode}{}
+\begin{tikzpicture}
+	\draw[thin,lightgray] (-3,-1) grid (5,5) ;
+	\coordinate (A) at (0,0) ; \coordinate (B) at (4,1) ;
+	\coordinate (C) at (1,1) ; \coordinate (D) at (5,4) ;
+	\coordinate (E) at (0,1) ; \coordinate (F) at (0,5) ;
+	\coordinate (G) at (-2,0) ;
+	\tkzFlecheEvasee[Couleur=green,TypeFleche=Triangle]{A}{B}
+	\tkzFlecheEvasee[Couleur=blue,Direction=right/10]{D}{C}
+	\tkzFlecheEvasee%
+		[Couleur=red,Direction=left/45,TypeFleche=Stealth,Epaisseur=0.1mm,Coeff=10]%
+		{-2,1}{0,4}
+	\tkzFlecheEvasee%
+		[Couleur=red,Direction=right/45,Epaisseur=0.1mm,Coeff=10,TypeFleche=Stealth]%
+		{-2,1}{0,4}
+	\tkzFlecheEvasee[Couleur=teal,Deplacement,Direction=left/10]{-3,-1}{5,1}
+\end{tikzpicture}
+\end{DemoCode}
 
 \end{document}
